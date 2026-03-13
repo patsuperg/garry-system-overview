@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GARRY SYSTEM EVOLUTION — Mar 13 2026</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #0f0f1a;
+    --bg3: #14141f;
+    --border: #1e1e2e;
+    --border2: #252535;
+    --text: #e2e2f0;
+    --text2: #8888aa;
+    --text3: #555575;
+    --green: #22d3a0;
+    --green2: #16a37a;
+    --green-glow: rgba(34, 211, 160, 0.15);
+    --red: #f43f5e;
+    --red2: #be123c;
+    --red-glow: rgba(244, 63, 94, 0.15);
+    --amber: #f59e0b;
+    --amber-glow: rgba(245, 158, 11, 0.15);
+    --blue: #3b82f6;
+    --blue2: #1d4ed8;
+    --blue-glow: rgba(59, 130, 246, 0.15);
+    --purple: #a855f7;
+    --purple-glow: rgba(168, 85, 247, 0.15);
+    --accent: #6366f1;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── GRID LINES BG ── */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    padding: 80px 0 60px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 16px;
+  }
+
+  .hero-title {
+    font-size: clamp(32px, 6vw, 64px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #fff 0%, var(--text2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-size: 14px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+    margin-bottom: 48px;
+  }
+
+  /* ── BIG SCORE GAUGE ── */
+  .gauge-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+
+  .gauge-block {
+    text-align: center;
+  }
+
+  .gauge-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 12px;
+  }
+
+  .gauge-ring {
+    width: 120px;
+    height: 120px;
+    position: relative;
+    margin: 0 auto 12px;
+  }
+
+  .gauge-ring svg {
+    transform: rotate(-90deg);
+  }
+
+  .gauge-ring .ring-bg {
+    fill: none;
+    stroke: var(--border2);
+    stroke-width: 8;
+  }
+
+  .gauge-ring .ring-fill {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 2s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .gauge-ring .ring-before { stroke: var(--red); filter: drop-shadow(0 0 6px var(--red)); }
+  .gauge-ring .ring-after  { stroke: var(--green); filter: drop-shadow(0 0 8px var(--green)); }
+  .gauge-ring .ring-target { stroke: var(--purple); filter: drop-shadow(0 0 8px var(--purple)); }
+
+  .gauge-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gauge-number {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .gauge-unit {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+  }
+
+  .before-color { color: var(--red); }
+  .after-color  { color: var(--green); }
+  .target-color { color: var(--purple); }
+
+  .gauge-arrow {
+    font-size: 28px;
+    color: var(--text3);
+    opacity: 0.4;
+  }
+
+  .delta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: var(--green-glow);
+    border: 1px solid rgba(34, 211, 160, 0.3);
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 0.02em;
+  }
+
+  .hero-date {
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section {
+    position: relative;
+    z-index: 1;
+    padding: 64px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header {
+    margin-bottom: 40px;
+  }
+
+  .section-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .section-desc {
+    font-size: 14px;
+    color: var(--text2);
+    margin-top: 6px;
+  }
+
+  /* ── COMPARISON TABLE ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 180px 1fr;
+    gap: 0;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .compare-col-header {
+    padding: 16px 24px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compare-col-header.before { background: rgba(244, 63, 94, 0.06); color: var(--red); border-right: 1px solid var(--border); }
+  .compare-col-header.metric { background: var(--bg3); color: var(--text3); text-align: center; border-right: 1px solid var(--border); }
+  .compare-col-header.after  { background: rgba(34, 211, 160, 0.06); color: var(--green); }
+
+  .compare-row {
+    display: contents;
+  }
+
+  .compare-row > div {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .compare-row > div.before-cell { border-right: 1px solid var(--border); background: rgba(244, 63, 94, 0.02); }
+  .compare-row > div.metric-cell { background: var(--bg3); border-right: 1px solid var(--border); align-items: center; }
+  .compare-row > div.after-cell  { background: rgba(34, 211, 160, 0.02); }
+
+  .compare-row:last-child > div { border-bottom: none; }
+
+  .metric-name {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text3);
+    text-align: center;
+  }
+
+  .cell-score {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+  }
+
+  .cell-score.red { color: var(--red); }
+  .cell-score.green { color: var(--green); }
+
+  .cell-text {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.4;
+  }
+
+  .bar-track {
+    height: 4px;
+    background: var(--border2);
+    border-radius: 2px;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    width: 0%;
+    transition: width 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .bar-fill.red { background: linear-gradient(90deg, var(--red2), var(--red)); box-shadow: 0 0 8px var(--red); }
+  .bar-fill.green { background: linear-gradient(90deg, var(--green2), var(--green)); box-shadow: 0 0 8px var(--green); }
+
+  /* ── CAPABILITY MATRIX ── */
+  .cap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+
+  .cap-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .cap-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-1px);
+  }
+
+  .cap-icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .cap-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .cap-dot.red    { background: var(--red);   box-shadow: 0 0 6px var(--red); }
+  .cap-dot.amber  { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+  .cap-dot.green  { background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse-green 2s ease-in-out infinite; }
+  .cap-dot.grey   { background: var(--text3); }
+
+  @keyframes pulse-green {
+    0%, 100% { box-shadow: 0 0 6px var(--green); }
+    50% { box-shadow: 0 0 14px var(--green), 0 0 20px rgba(34,211,160,0.4); }
+  }
+
+  .cap-arrow {
+    font-size: 10px;
+    color: var(--text3);
+    opacity: 0.5;
+  }
+
+  .cap-info { flex: 1; }
+
+  .cap-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .cap-desc {
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  /* ── STATS ROW ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 700px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .stat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, var(--green-glow), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .stat-card:hover::before { opacity: 1; }
+  .stat-card:hover { border-color: rgba(34,211,160,0.3); }
+
+  .stat-value {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--green);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 4px;
+  }
+
+  .stat-sub {
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  /* ── UNLOCK CARDS ── */
+  .unlock-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .unlock-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s, transform 0.5s, border-color 0.2s;
+  }
+
+  .unlock-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .unlock-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .unlock-card.green-card::after  { background: radial-gradient(circle at 50% 0%, var(--green-glow), transparent 70%); }
+  .unlock-card.blue-card::after   { background: radial-gradient(circle at 50% 0%, var(--blue-glow), transparent 70%); }
+  .unlock-card.purple-card::after { background: radial-gradient(circle at 50% 0%, var(--purple-glow), transparent 70%); }
+  .unlock-card.amber-card::after  { background: radial-gradient(circle at 50% 0%, var(--amber-glow), transparent 70%); }
+
+  .unlock-card:hover::after { opacity: 1; }
+  .unlock-card.green-card:hover  { border-color: rgba(34,211,160,0.4); }
+  .unlock-card.blue-card:hover   { border-color: rgba(59,130,246,0.4); }
+  .unlock-card.purple-card:hover { border-color: rgba(168,85,247,0.4); }
+  .unlock-card.amber-card:hover  { border-color: rgba(245,158,11,0.4); }
+
+  .unlock-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+    display: block;
+    position: relative;
+    z-index: 1;
+  }
+
+  .unlock-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .unlock-card.green-card  .unlock-title { color: var(--green); }
+  .unlock-card.blue-card   .unlock-title { color: var(--blue); }
+  .unlock-card.purple-card .unlock-title { color: var(--purple); }
+  .unlock-card.amber-card  .unlock-title { color: var(--amber); }
+
+  .unlock-desc {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+    position: relative;
+    z-index: 1;
+  }
+
+  .unlock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 12px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+  }
+
+  .badge-live    { background: rgba(34,211,160,0.15); color: var(--green); border: 1px solid rgba(34,211,160,0.3); }
+  .badge-ready   { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-installed { background: rgba(59,130,246,0.15); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
+
+  /* ── ROADMAP ── */
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+  }
+
+  @media (max-width: 800px) {
+    .roadmap { grid-template-columns: 1fr 1fr; }
+    .roadmap-connector { display: none; }
+  }
+
+  @media (max-width: 500px) {
+    .roadmap { grid-template-columns: 1fr; }
+  }
+
+  .roadmap::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: 12.5%;
+    right: 12.5%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--green), var(--amber), var(--blue), var(--purple));
+    opacity: 0.3;
+    z-index: 0;
+  }
+
+  @media (max-width: 800px) { .roadmap::before { display: none; } }
+
+  .roadmap-item {
+    position: relative;
+    z-index: 1;
+    padding: 0 12px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+
+  .roadmap-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .roadmap-dot {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    margin: 0 auto 16px;
+    border: 2px solid;
+    background: var(--bg);
+  }
+
+  .roadmap-dot.done    { border-color: var(--green);  color: var(--green);  box-shadow: 0 0 16px var(--green-glow), 0 0 4px var(--green); }
+  .roadmap-dot.next    { border-color: var(--amber);  color: var(--amber);  box-shadow: 0 0 12px var(--amber-glow); }
+  .roadmap-dot.later   { border-color: var(--blue);   color: var(--blue);   box-shadow: 0 0 10px var(--blue-glow); }
+  .roadmap-dot.future  { border-color: var(--purple); color: var(--purple); box-shadow: 0 0 10px var(--purple-glow); }
+
+  .roadmap-phase {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .roadmap-dot.done    ~ .roadmap-phase { color: var(--green); }
+  .roadmap-phase.amber  { color: var(--amber); }
+  .roadmap-phase.blue   { color: var(--blue); }
+  .roadmap-phase.purple { color: var(--purple); }
+
+  .roadmap-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .roadmap-items-list {
+    list-style: none;
+    font-size: 11px;
+    color: var(--text3);
+    line-height: 1.8;
+  }
+
+  .roadmap-items-list li::before {
+    content: '→ ';
+    color: var(--text3);
+  }
+
+  .roadmap-effort {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    background: var(--bg3);
+    color: var(--text3);
+    border: 1px solid var(--border2);
+  }
+
+  /* ── VISION ── */
+  .vision-section {
+    position: relative;
+    z-index: 1;
+    padding: 80px 0;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .vision-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .vision-title {
+    font-size: clamp(20px, 4vw, 36px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .vision-from { color: var(--red); }
+  .vision-arrow-text { color: var(--text3); }
+  .vision-to { color: var(--green); }
+
+  .vision-sub {
+    font-size: 15px;
+    color: var(--text2);
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .utilization-track {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .util-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 10px;
+  }
+
+  .util-bar-bg {
+    height: 12px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .util-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .util-bar-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    animation: shimmer 2.5s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .util-bar-before {
+    background: linear-gradient(90deg, #be123c, var(--red));
+    box-shadow: 0 0 12px var(--red);
+    width: 0%;
+    transition: width 2s cubic-bezier(0.23,1,0.32,1) 0.5s;
+  }
+
+  .util-bar-after {
+    background: linear-gradient(90deg, var(--green2), var(--green));
+    box-shadow: 0 0 12px var(--green);
+    width: 0%;
+    transition: width 2s cubic-bezier(0.23,1,0.32,1) 0.8s;
+  }
+
+  .util-bar-target {
+    background: linear-gradient(90deg, #7e22ce, var(--purple));
+    box-shadow: 0 0 12px var(--purple);
+    width: 0%;
+    transition: width 2s cubic-bezier(0.23,1,0.32,1) 1.1s;
+  }
+
+  .util-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .util-row-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    width: 56px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .util-row-bar {
+    flex: 1;
+  }
+
+  .util-row-pct {
+    font-size: 13px;
+    font-weight: 700;
+    width: 42px;
+    flex-shrink: 0;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    position: relative;
+    z-index: 1;
+    padding: 32px 0;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-text {
+    font-size: 12px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── ANIMATED COUNTER ── */
+  .count-up { display: inline-block; }
+
+  /* ── LIVE PULSE ── */
+  .live-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-right: 6px;
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse-live 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-live {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  /* ── BADGES ── */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+
+  .pill-green  { background: rgba(34,211,160,0.12); color: var(--green); border: 1px solid rgba(34,211,160,0.25); }
+  .pill-red    { background: rgba(244,63,94,0.12); color: var(--red); border: 1px solid rgba(244,63,94,0.25); }
+  .pill-amber  { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.25); }
+  .pill-purple { background: rgba(168,85,247,0.12); color: var(--purple); border: 1px solid rgba(168,85,247,0.25); }
+
+  /* ── COMPARE MOBILE ── */
+  @media (max-width: 700px) {
+    .compare-grid {
+      grid-template-columns: 1fr 120px 1fr;
+    }
+    .compare-row > div { padding: 12px 14px; }
+    .cell-text { font-size: 11px; }
+  }
+
+  /* ── STAGGER ANIMATION ── */
+  .stagger > * {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.4s, transform 0.4s;
+  }
+
+  .stagger > *.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- ════════════════ HERO ════════════════ -->
+<div class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Mac Mini M4 Pro · March 13 2026 · Audit Day</div>
+    <h1 class="hero-title">GARRY SYSTEM<br>EVOLUTION</h1>
+    <div class="hero-subtitle">Before vs. After · P1 Upgrades Complete · 90% Potential Unlocked</div>
+
+    <div class="gauge-row">
+      <div class="gauge-block">
+        <div class="gauge-label">Before</div>
+        <div class="gauge-ring" id="gauge-before">
+          <svg viewBox="0 0 120 120" width="120" height="120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"/>
+            <circle class="ring-fill ring-before" cx="60" cy="60" r="52"
+              stroke-dasharray="326.73"
+              stroke-dashoffset="326.73"
+              id="ring-before-fill"/>
+          </svg>
+          <div class="gauge-center">
+            <div class="gauge-number before-color"><span class="count-up" data-target="40" data-suffix="%">0%</span></div>
+            <div class="gauge-unit">potential</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text3);">Score <span style="color:var(--red);font-weight:700;">4/10</span></div>
+      </div>
+
+      <div class="gauge-arrow">→</div>
+
+      <div class="gauge-block">
+        <div class="gauge-label">After <span class="live-dot"></span></div>
+        <div class="gauge-ring" id="gauge-after">
+          <svg viewBox="0 0 120 120" width="120" height="120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"/>
+            <circle class="ring-fill ring-after" cx="60" cy="60" r="52"
+              stroke-dasharray="326.73"
+              stroke-dashoffset="326.73"
+              id="ring-after-fill"/>
+          </svg>
+          <div class="gauge-center">
+            <div class="gauge-number after-color"><span class="count-up" data-target="65" data-suffix="%">0%</span></div>
+            <div class="gauge-unit">potential</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text3);">Score <span style="color:var(--green);font-weight:700;">6.5/10</span></div>
+      </div>
+
+      <div class="gauge-arrow">→</div>
+
+      <div class="gauge-block">
+        <div class="gauge-label">Target</div>
+        <div class="gauge-ring">
+          <svg viewBox="0 0 120 120" width="120" height="120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"/>
+            <circle class="ring-fill ring-target" cx="60" cy="60" r="52"
+              stroke-dasharray="326.73"
+              stroke-dashoffset="326.73"
+              id="ring-target-fill"/>
+          </svg>
+          <div class="gauge-center">
+            <div class="gauge-number target-color"><span class="count-up" data-target="90" data-suffix="%">0%</span></div>
+            <div class="gauge-unit">potential</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text3);">Score <span style="color:var(--purple);font-weight:700;">9/10</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;">
+      <span class="delta-badge">↑ +62.5% improvement · P1 complete</span>
+    </div>
+
+    <div class="hero-date">Audit: 09:00 AEST · Upgrade Complete: 15:30 AEST · Mar 13 2026</div>
+  </div>
+</div>
+
+<!-- ════════════════ SIDE-BY-SIDE COMPARISON ════════════════ -->
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Dyno Sheet</div>
+      <h2 class="section-title">System Performance: Before vs. After</h2>
+      <div class="section-desc">Like a car tune — same hardware, radically different output.</div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-col-header before">Before — 09:00 AEST</div>
+      <div class="compare-col-header metric">Metric</div>
+      <div class="compare-col-header after">After — 15:30 AEST</div>
+
+      <!-- OVERALL -->
+      <div class="before-cell compare-row">
+        <div class="cell-score red">4/10</div>
+        <div class="bar-track"><div class="bar-fill red" data-width="40"></div></div>
+        <div class="cell-text">Most capability sitting dormant</div>
+      </div>
+      <div class="metric-cell compare-row"><div class="metric-name">Overall Score</div></div>
+      <div class="after-cell compare-row">
+        <div class="cell-score green">6.5/10</div>
+        <div class="bar-track"><div class="bar-fill green" data-width="65"></div></div>
+        <div class="cell-text">P1 upgrades deployed and running</div>
+      </div>
+
+      <!-- CPU -->
+      <div class="before-cell">
+        <div class="cell-score red">4/10</div>
+        <div class="bar-track"><div class="bar-fill red" data-width="40"></div></div>
+        <div class="cell-text">80% idle · 12-core M4 Pro wasted</div>
+      </div>
+      <div class="metric-cell"><div class="metric-name">CPU</div></div>
+      <div class="after-cell">
+        <div class="cell-score green">5/10</div>
+        <div class="bar-track"><div class="bar-fill green" data-width="50"></div></div>
+        <div class="cell-text">Local inference now possible · Ollama active</div>
+      </div>
+
+      <!-- MEMORY -->
+      <div class="before-cell">
+        <div class="cell-score red">5/10</div>
+        <div class="bar-track"><div class="bar-fill red" data-width="50"></div></div>
+        <div class="cell-text">34GB used · no AI workloads in RAM</div>
+      </div>
+      <div class="metric-cell"><div class="metric-name">Memory</div></div>
+      <div class="after-cell">
+        <div class="cell-score green">7/10</div>
+        <div class="bar-track"><div class="bar-fill green" data-width="70"></div></div>
+        <div class="cell-text">Ollama model loaded · ChromaDB running</div>
+      </div>
+
+      <!-- STORAGE -->
+      <div class="before-cell">
+        <div class="cell-score" style="color:var(--green);">9/10</div>
+        <div class="bar-track"><div class="bar-fill green" data-width="90"></div></div>
+        <div class="cell-text">836GB free · healthy baseline</div>
+      </div>
+      <div class="metric-cell"><div class="metric-name">Storage</div></div>
+      <div class="after-cell">
+        <div class="cell-score green">9/10</div>
+        <div class="bar-track"><div class="bar-fill green" data-width="90"></div></div>
+        <div class="cell-text">Unchanged · model added (4.9GB only)</div>
+      </div>
+
+      <!-- AUTOMATION -->
+      <div class="before-cell">
+        <div class="cell-score" style="color:var(--amber);">7/10</div>
+        <div class="bar-track"><div class="bar-fill red" data-width="70"></div></div>
+        <div class="cell-text">23 agents active · no self-improvement</div>
+      </div>
+      <div class="metric-cell"><div class="metric-name">Automation</div></div>
+      <div class="after-cell">
+        <div class="cell-score green">8/10</div>
+        <div class="bar-track"><div class="bar-fill green" data-width="80"></div></div>
+        <div class="cell-text">24 agents + auto-evolve · self-improving</div>
+      </div>
+
+      <!-- AI/ML -->
+      <div class="before-cell">
+        <div class="cell-score red">2/10</div>
+        <div class="bar-track"><div class="bar-fill red" data-width="20"></div></div>
+        <div class="cell-text">Neural Engine IDLE · no models · zero local AI</div>
+      </div>
+      <div class="metric-cell"><div class="metric-name">AI / ML</div></div>
+      <div class="after-cell">
+        <div class="cell-score green">6/10</div>
+        <div class="bar-track"><div class="bar-fill green" data-width="60"></div></div>
+        <div class="cell-text">Ollama llama3.1:8b live · MLX installed · ChromaDB ready</div>
+      </div>
+
+      <!-- LOCAL MODELS -->
+      <div class="before-cell">
+        <div class="cell-score red">0</div>
+        <div class="bar-track"><div class="bar-fill red" data-width="0"></div></div>
+        <div class="cell-text">No local models installed</div>
+      </div>
+      <div class="metric-cell"><div class="metric-name">Local Models</div></div>
+      <div class="after-cell">
+        <div class="cell-score green">1 model</div>
+        <div class="bar-track"><div class="bar-fill green" data-width="30"></div></div>
+        <div class="cell-text">llama3.1:8b · 4.9GB · 51 tokens/sec</div>
+      </div>
+
+      <!-- MEMORY SYSTEM -->
+      <div class="before-cell">
+        <div class="cell-score red">1 layer</div>
+        <div class="bar-track"><div class="bar-fill red" data-width="25"></div></div>
+        <div class="cell-text">Memory MCP only · 118KB flat file · sequential reads</div>
+      </div>
+      <div class="metric-cell"><div class="metric-name">Memory System</div></div>
+      <div class="after-cell">
+        <div class="cell-score green">1 + vector</div>
+        <div class="bar-track"><div class="bar-fill green" data-width="50"></div></div>
+        <div class="cell-text">Memory MCP + ChromaDB semantic search ready to index</div>
+      </div>
+
+      <!-- SELF HEALING -->
+      <div class="before-cell">
+        <div class="cell-score red">Basic</div>
+        <div class="bar-track"><div class="bar-fill red" data-width="35"></div></div>
+        <div class="cell-text">5 hooks · manual updates required</div>
+      </div>
+      <div class="metric-cell"><div class="metric-name">Self-Healing</div></div>
+      <div class="after-cell">
+        <div class="cell-score green">Auto-Evolve</div>
+        <div class="bar-track"><div class="bar-fill green" data-width="70"></div></div>
+        <div class="cell-text">6 hooks + weekly auto-upgrade (Sun 3am)</div>
+      </div>
+
+      <!-- SCREEN ACCESS -->
+      <div class="before-cell">
+        <div class="cell-score red">Manual</div>
+        <div class="bar-track"><div class="bar-fill red" data-width="20"></div></div>
+        <div class="cell-text">Manual screenshots required — blocking friction</div>
+      </div>
+      <div class="metric-cell"><div class="metric-name">Screen Access</div></div>
+      <div class="after-cell">
+        <div class="cell-score green">Instant</div>
+        <div class="bar-track"><div class="bar-fill green" data-width="90"></div></div>
+        <div class="cell-text">screen-grab.py · 0.5s · fully autonomous</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ PERFORMANCE STATS ════════════════ -->
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Numbers</div>
+      <h2 class="section-title">Performance Stats</h2>
+      <div class="section-desc">Key metrics from the P1 upgrade — real numbers from the system.</div>
+    </div>
+
+    <div class="stats-grid stagger" id="stats-stagger">
+      <div class="stat-card">
+        <div class="stat-value"><span class="count-up" data-target="51" data-suffix="">0</span></div>
+        <div class="stat-label">tok/s</div>
+        <div class="stat-sub">Local inference speed<br>llama3.1:8b · M4 Pro GPU</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value"><span class="count-up" data-target="24" data-suffix="">0</span></div>
+        <div class="stat-label">Active Agents</div>
+        <div class="stat-sub">+1 auto-evolve added<br>Running 24/7 on Mac Mini</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="font-size:32px;">$0</div>
+        <div class="stat-label">/query</div>
+        <div class="stat-sub">Local inference cost<br>vs ~$0.002 per Claude call</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">0.5<span style="font-size:20px;color:var(--text2);">s</span></div>
+        <div class="stat-label">Screen Capture</div>
+        <div class="stat-sub">screen-grab.py<br>vs manual → minutes</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ CAPABILITY MATRIX ════════════════ -->
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Status Matrix</div>
+      <h2 class="section-title">Capability Status</h2>
+      <div class="section-desc">
+        <span class="pill pill-red">Red = Not available</span>&nbsp;
+        <span class="pill pill-amber">Amber = Installed, not integrated</span>&nbsp;
+        <span class="pill pill-green">Green = Live &amp; working</span>
+      </div>
+    </div>
+
+    <div class="cap-grid stagger" id="cap-stagger">
+      <div class="cap-card">
+        <div class="cap-icons">
+          <div class="cap-dot red"></div>
+          <div class="cap-arrow">→</div>
+          <div class="cap-dot green"></div>
+        </div>
+        <div class="cap-info">
+          <div class="cap-name">Local AI Inference</div>
+          <div class="cap-desc">Ollama running llama3.1:8b · 51 tok/s · 4.9GB RAM</div>
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icons">
+          <div class="cap-dot red"></div>
+          <div class="cap-arrow">→</div>
+          <div class="cap-dot amber"></div>
+        </div>
+        <div class="cap-info">
+          <div class="cap-name">Neural Engine (MLX)</div>
+          <div class="cap-desc">MLX installed · framework ready · models not yet loaded</div>
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icons">
+          <div class="cap-dot red"></div>
+          <div class="cap-arrow">→</div>
+          <div class="cap-dot amber"></div>
+        </div>
+        <div class="cap-info">
+          <div class="cap-name">Vector Memory (ChromaDB)</div>
+          <div class="cap-desc">ChromaDB installed · ready to index sessions + memory</div>
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icons">
+          <div class="cap-dot red"></div>
+          <div class="cap-arrow">→</div>
+          <div class="cap-dot green"></div>
+        </div>
+        <div class="cap-info">
+          <div class="cap-name">Instant Screen Access</div>
+          <div class="cap-desc">screen-grab.py live · 0.5s capture · no friction</div>
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icons">
+          <div class="cap-dot red"></div>
+          <div class="cap-arrow">→</div>
+          <div class="cap-dot green"></div>
+        </div>
+        <div class="cap-info">
+          <div class="cap-name">Auto-Evolve Agent</div>
+          <div class="cap-desc">Weekly Sunday 3am · model pulls + package upgrades</div>
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icons">
+          <div class="cap-dot green"></div>
+          <div class="cap-arrow">→</div>
+          <div class="cap-dot green"></div>
+        </div>
+        <div class="cap-info">
+          <div class="cap-name">Session Transcripts</div>
+          <div class="cap-desc">Hook added · sessions logged to SQLite · searchable</div>
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icons">
+          <div class="cap-dot green"></div>
+          <div class="cap-arrow">→</div>
+          <div class="cap-dot green"></div>
+        </div>
+        <div class="cap-info">
+          <div class="cap-name">Gmail + Google Calendar</div>
+          <div class="cap-desc">MCP connectors live · read, write, draft, respond</div>
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icons">
+          <div class="cap-dot green"></div>
+          <div class="cap-arrow">→</div>
+          <div class="cap-dot green"></div>
+        </div>
+        <div class="cap-info">
+          <div class="cap-name">23-Agent Automation</div>
+          <div class="cap-desc">LaunchAgents running · morning brief · email scan · deals</div>
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icons">
+          <div class="cap-dot red"></div>
+          <div class="cap-arrow">→</div>
+          <div class="cap-dot grey"></div>
+        </div>
+        <div class="cap-info">
+          <div class="cap-name">Whisper Voice Pipeline</div>
+          <div class="cap-desc">P2 · voice → text → Garry · not yet built</div>
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icons">
+          <div class="cap-dot red"></div>
+          <div class="cap-arrow">→</div>
+          <div class="cap-dot grey"></div>
+        </div>
+        <div class="cap-info">
+          <div class="cap-name">Garry Local Inference</div>
+          <div class="cap-desc">P3 · route light queries to Ollama · cut Claude API cost</div>
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icons">
+          <div class="cap-dot red"></div>
+          <div class="cap-arrow">→</div>
+          <div class="cap-dot grey"></div>
+        </div>
+        <div class="cap-info">
+          <div class="cap-name">Autonomous Deal Pipeline</div>
+          <div class="cap-desc">P4 · end-to-end property acquisition with no human input</div>
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icons">
+          <div class="cap-dot amber"></div>
+          <div class="cap-arrow">→</div>
+          <div class="cap-dot amber"></div>
+        </div>
+        <div class="cap-info">
+          <div class="cap-name">GPU / MPS Compute</div>
+          <div class="cap-desc">Available via MLX · unified memory · not yet saturated</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ NEW CAPABILITIES UNLOCKED ════════════════ -->
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">What's New</div>
+      <h2 class="section-title">Capabilities Unlocked Today</h2>
+      <div class="section-desc">Five upgrades shipped in a single afternoon session.</div>
+    </div>
+
+    <div class="unlock-grid">
+      <div class="unlock-card green-card">
+        <span class="unlock-icon">🧠</span>
+        <div class="unlock-title">Ollama + llama3.1:8b</div>
+        <div class="unlock-desc">Local AI brain running on M4 Pro GPU. 51 tokens/sec. No API calls. No cost. No latency to Anthropic.</div>
+        <div class="unlock-badge badge-live">Live</div>
+      </div>
+
+      <div class="unlock-card blue-card">
+        <span class="unlock-icon">⚡</span>
+        <div class="unlock-title">MLX Framework</div>
+        <div class="unlock-desc">Apple's Neural Engine now activated. Unified memory architecture means GPU + CPU share 48GB. MLX models next.</div>
+        <div class="unlock-badge badge-installed">Installed</div>
+      </div>
+
+      <div class="unlock-card purple-card">
+        <span class="unlock-icon">🔮</span>
+        <div class="unlock-title">ChromaDB Vector Memory</div>
+        <div class="unlock-desc">Semantic search replacing flat-file reads. 118KB growing into intelligent retrieval. Ready to index all sessions.</div>
+        <div class="unlock-badge badge-ready">Ready to Index</div>
+      </div>
+
+      <div class="unlock-card green-card">
+        <span class="unlock-icon">👁</span>
+        <div class="unlock-title">screen-grab.py</div>
+        <div class="unlock-desc">Garry can now see the screen instantly. 0.5s capture. No more "take a manual screenshot." Removes the biggest friction point.</div>
+        <div class="unlock-badge badge-live">Live</div>
+      </div>
+
+      <div class="unlock-card amber-card">
+        <span class="unlock-icon">🔄</span>
+        <div class="unlock-title">Auto-Evolve Agent</div>
+        <div class="unlock-desc">System now upgrades itself. Every Sunday 3am: pull new Ollama models, upgrade packages, sync Luke's repo, run health check.</div>
+        <div class="unlock-badge badge-live">Scheduled</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ UPGRADE ROADMAP ════════════════ -->
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Roadmap</div>
+      <h2 class="section-title">Path to 9/10</h2>
+      <div class="section-desc">Four phases from current state to fully autonomous AI investment engine.</div>
+    </div>
+
+    <div class="roadmap" id="roadmap">
+      <div class="roadmap-item">
+        <div class="roadmap-dot done">P1</div>
+        <div class="roadmap-phase" style="color:var(--green);">Complete ✓</div>
+        <div class="roadmap-title">Foundation<br>AI Layer</div>
+        <ul class="roadmap-items-list">
+          <li>Ollama + llama3.1:8b</li>
+          <li>MLX framework</li>
+          <li>ChromaDB installed</li>
+          <li>screen-grab.py live</li>
+          <li>Auto-evolve agent</li>
+          <li>Session transcripts</li>
+        </ul>
+        <span class="roadmap-effort">Done: Mar 13</span>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-dot next">P2</div>
+        <div class="roadmap-phase amber">Next Sprint</div>
+        <div class="roadmap-title">Voice &amp;<br>Payments</div>
+        <ul class="roadmap-items-list">
+          <li>Whisper pipeline</li>
+          <li>Voice → text → Garry</li>
+          <li>HAP payment tracker</li>
+          <li>ChromaDB indexing</li>
+          <li>Overnight compute jobs</li>
+        </ul>
+        <span class="roadmap-effort">Est: 1 week</span>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-dot later">P3</div>
+        <div class="roadmap-phase blue">This Month</div>
+        <div class="roadmap-title">Deal Scoring<br>Engine</div>
+        <ul class="roadmap-items-list">
+          <li>Deal scoring AI</li>
+          <li>Garry → Ollama routing</li>
+          <li>Light query offload</li>
+          <li>Claude API cost cut</li>
+          <li>MLX model loading</li>
+        </ul>
+        <span class="roadmap-effort">Est: 2 weeks</span>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-dot future">P4</div>
+        <div class="roadmap-phase purple">April+</div>
+        <div class="roadmap-title">Autonomous<br>Pipeline</div>
+        <ul class="roadmap-items-list">
+          <li>End-to-end deals</li>
+          <li>Auto-acquisition flow</li>
+          <li>Garry as full COO</li>
+          <li>90% utilization</li>
+          <li>10x portfolio pace</li>
+        </ul>
+        <span class="roadmap-effort">Est: Q2 2026</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ THE VISION ════════════════ -->
+<div class="vision-section">
+  <div class="container">
+    <div class="vision-glow"></div>
+    <div class="hero-eyebrow">The Vision</div>
+    <h2 class="vision-title">
+      <span class="vision-from">Task Scheduler</span>
+      <span class="vision-arrow-text"> → </span>
+      <span class="vision-to">Autonomous AI<br>Investment Engine</span>
+    </h2>
+    <div class="vision-sub">From 12 idle cores to 90% utilization. From manual decisions to Garry making them.</div>
+
+    <div class="utilization-track">
+      <div style="font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:20px;">System Utilization Over Time</div>
+
+      <div class="util-row">
+        <div class="util-row-label" style="color:var(--red);">Before</div>
+        <div class="util-row-bar">
+          <div class="util-bar-bg"><div class="util-bar-fill util-bar-before" id="util-before"></div></div>
+        </div>
+        <div class="util-row-pct" style="color:var(--red);">35%</div>
+      </div>
+
+      <div class="util-row">
+        <div class="util-row-label" style="color:var(--green);">After</div>
+        <div class="util-row-bar">
+          <div class="util-bar-bg"><div class="util-bar-fill util-bar-after" id="util-after"></div></div>
+        </div>
+        <div class="util-row-pct" style="color:var(--green);">65%</div>
+      </div>
+
+      <div class="util-row">
+        <div class="util-row-label" style="color:var(--purple);">Target</div>
+        <div class="util-row-bar">
+          <div class="util-bar-bg"><div class="util-bar-fill util-bar-target" id="util-target"></div></div>
+        </div>
+        <div class="util-row-pct" style="color:var(--purple);">90%</div>
+      </div>
+
+      <div style="margin-top:32px;display:flex;justify-content:center;gap:32px;flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Properties</div>
+          <div style="font-size:20px;font-weight:800;color:var(--text);">6 → 20+</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Monthly Net</div>
+          <div style="font-size:20px;font-weight:800;color:var(--green);">$4,936 → $20K</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Patrick's Input</div>
+          <div style="font-size:20px;font-weight:800;color:var(--text);">Many → Minimal</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<div class="footer">
+  <div class="container">
+    <div class="footer-text">
+      <span class="live-dot"></span>
+      GARRY SYSTEM — Mac Mini M4 Pro · 48GB · Apple Silicon ·
+      Generated Mar 13 2026 ·
+      <span style="color:var(--accent);">Sonnet 4.6</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── COUNT-UP ANIMATION ──
+  function animateCountUp(el, duration = 2000) {
+    const target = parseFloat(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    const isDecimal = target % 1 !== 0;
+    const start = performance.now();
+
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out expo
+      const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      const value = eased * target;
+      el.textContent = (isDecimal ? value.toFixed(1) : Math.round(value)) + suffix;
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
+  // ── GAUGE RING ANIMATION ──
+  function animateRing(ringEl, percent, delay = 0) {
+    const circumference = 326.73;
+    const offset = circumference - (percent / 100) * circumference;
+    setTimeout(() => {
+      ringEl.style.transition = 'stroke-dashoffset 2s cubic-bezier(0.23,1,0.32,1)';
+      ringEl.style.strokeDashoffset = offset;
+    }, delay);
+  }
+
+  // ── BAR FILL ──
+  function animateBars() {
+    document.querySelectorAll('.bar-fill[data-width]').forEach(bar => {
+      setTimeout(() => {
+        bar.style.width = bar.dataset.width + '%';
+      }, 300);
+    });
+  }
+
+  // ── UTILITY BARS ──
+  function animateUtilBars() {
+    const before = document.getElementById('util-before');
+    const after  = document.getElementById('util-after');
+    const target = document.getElementById('util-target');
+    if (before) before.style.width = '35%';
+    if (after)  after.style.width  = '65%';
+    if (target) target.style.width = '90%';
+  }
+
+  // ── INTERSECTION OBSERVER ──
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+
+        // Stagger children
+        if (el.classList.contains('stagger')) {
+          Array.from(el.children).forEach((child, i) => {
+            setTimeout(() => child.classList.add('visible'), i * 80);
+          });
+        }
+
+        // Individual unlock cards
+        if (el.classList.contains('unlock-card')) {
+          el.classList.add('visible');
+        }
+
+        // Roadmap items
+        if (el.classList.contains('roadmap-item')) {
+          el.classList.add('visible');
+        }
+
+        // Util bars
+        if (el.id === 'util-before' || el.id === 'util-after' || el.id === 'util-target') {
+          animateUtilBars();
+        }
+
+        io.unobserve(el);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  // ── INIT ──
+  document.addEventListener('DOMContentLoaded', () => {
+    // Hero gauges — animate on load
+    setTimeout(() => {
+      animateRing(document.getElementById('ring-before-fill'), 40, 400);
+      animateRing(document.getElementById('ring-after-fill'), 65, 700);
+      animateRing(document.getElementById('ring-target-fill'), 90, 1000);
+    }, 200);
+
+    // Hero count-ups
+    document.querySelectorAll('.hero .count-up').forEach((el, i) => {
+      setTimeout(() => animateCountUp(el, 2000), 500 + i * 300);
+    });
+
+    // Bar fills on load
+    animateBars();
+
+    // Observe stagger containers
+    document.querySelectorAll('.stagger').forEach(el => io.observe(el));
+
+    // Observe unlock cards
+    document.querySelectorAll('.unlock-card').forEach(el => io.observe(el));
+
+    // Observe roadmap items
+    document.querySelectorAll('.roadmap-item').forEach(el => io.observe(el));
+
+    // Observe util section
+    const visionSection = document.querySelector('.vision-section');
+    if (visionSection) {
+      const visionIo = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          animateUtilBars();
+          visionIo.disconnect();
+        }
+      }, { threshold: 0.2 });
+      visionIo.observe(visionSection);
+    }
+
+    // Stat count-ups via IO
+    const statsIo = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        document.querySelectorAll('.stat-card .count-up').forEach((el, i) => {
+          setTimeout(() => animateCountUp(el, 1500), i * 150);
+        });
+        statsIo.disconnect();
+      }
+    }, { threshold: 0.3 });
+    const statsGrid = document.getElementById('stats-stagger');
+    if (statsGrid) statsIo.observe(statsGrid);
+
+    // Roadmap stagger
+    const roadmapEl = document.getElementById('roadmap');
+    if (roadmapEl) {
+      const roadmapIo = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          Array.from(roadmapEl.children).forEach((child, i) => {
+            setTimeout(() => child.classList.add('visible'), i * 120);
+          });
+          roadmapIo.disconnect();
+        }
+      }, { threshold: 0.1 });
+      roadmapIo.observe(roadmapEl);
+    }
+  });
+</script>
+
+</body>
+</html>
