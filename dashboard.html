@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Garry Command Centre</title>
+<style>
+  :root {
+    --bg: #08080d;
+    --bg2: #0d0d16;
+    --bg3: #12121c;
+    --border: #1a1a2a;
+    --border2: #222233;
+    --text: #e8e8f4;
+    --text2: #8888aa;
+    --text3: #555570;
+    --green: #22d3a0;
+    --green2: #16a37a;
+    --green-glow: rgba(34,211,160,0.12);
+    --red: #f43f5e;
+    --red-glow: rgba(244,63,94,0.12);
+    --amber: #f59e0b;
+    --amber-glow: rgba(245,158,11,0.12);
+    --blue: #3b82f6;
+    --blue2: #1d4ed8;
+    --blue-glow: rgba(59,130,246,0.12);
+    --purple: #a855f7;
+    --accent: #6366f1;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  .page { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px; }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    padding: 12px 20px;
+    background: rgba(8,8,13,0.9); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-brand { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text2); }
+  .nav-brand strong { color: var(--text); }
+  .nav-links { display: flex; gap: 16px; }
+  .nav-links a {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text3); text-decoration: none; transition: color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--green); }
+  .nav-status { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text3); }
+  .nav-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* HERO BANNER */
+  .hero-banner {
+    background: linear-gradient(135deg, rgba(34,211,160,0.1), rgba(59,130,246,0.1));
+    border: 1px solid var(--border); border-radius: 14px;
+    padding: 28px; margin: 24px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 20px;
+  }
+  .hero-income {
+    font-size: 48px; font-weight: 800; letter-spacing: -0.03em;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero-label { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 4px; }
+  .hero-meta { display: flex; gap: 28px; flex-wrap: wrap; }
+  .hero-stat { text-align: center; }
+  .hero-stat-val { font-size: 24px; font-weight: 700; }
+  .hero-stat-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; }
+  .progress-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin: 20px 0 6px; }
+  .progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--green), var(--blue)); }
+  .progress-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); }
+
+  /* GRID */
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; margin-top: 16px; }
+  .card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+  }
+  .card-header {
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .card-title { font-size: 13px; font-weight: 700; letter-spacing: 0.05em; }
+  .card-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 4px;
+  }
+  .card-body { padding: 14px 18px; }
+  .card.full { grid-column: 1 / -1; }
+
+  /* PROPERTY LIST */
+  .prop { padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .prop:last-child { border-bottom: none; }
+  .prop-addr { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .prop-row { display: flex; gap: 16px; font-size: 12px; color: var(--text2); flex-wrap: wrap; }
+  .prop-row strong { color: var(--text); }
+  .prop-totals {
+    margin-top: 12px; padding: 10px 14px;
+    background: var(--green-glow); border-radius: 8px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    font-size: 12px; font-weight: 600; color: var(--green);
+  }
+
+  /* AGENT GRID */
+  .agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 6px; }
+  .agent-item {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 10px; background: var(--bg3); border-radius: 6px;
+    font-size: 11px; font-weight: 500;
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .dot.on { background: var(--green); }
+  .dot.sched { background: var(--blue); }
+
+  /* DECISION / ITEM LIST */
+  .item { padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .item:last-child { border-bottom: none; }
+  .item-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .item-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
+  .item-status { font-size: 10px; font-weight: 700; color: var(--accent); margin-top: 4px; }
+
+  /* PERF STAT */
+  .perf-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .perf-row:last-child { border-bottom: none; }
+  .perf-label { color: var(--text2); }
+  .perf-val { font-weight: 600; }
+
+  /* STAT MINI */
+  .stat-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .stat-mini {
+    flex: 1; min-width: 80px; text-align: center;
+    padding: 12px 8px; background: var(--bg3); border-radius: 8px;
+  }
+  .stat-mini-val { font-size: 20px; font-weight: 800; }
+  .stat-mini-label { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+  /* FOOTER */
+  footer { text-align: center; padding: 30px 0; color: var(--text3); font-size: 11px; }
+
+  @media (max-width: 768px) {
+    .grid { grid-template-columns: 1fr; }
+    .hero-banner { flex-direction: column; text-align: center; }
+    .hero-income { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-brand"><strong>GARRY</strong> &nbsp;COMMAND CENTRE</div>
+  <div class="nav-links">
+    <a href="index.html">System</a>
+    <a href="dashboard.html" class="active">Dashboard</a>
+  </div>
+  <div class="nav-status"><div class="nav-dot"></div> Snapshot &bull; Mar 15</div>
+</div>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero-banner">
+    <div>
+      <div class="hero-label">Section 8 Monthly Net</div>
+      <div class="hero-income">$4,936</div>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-stat"><div class="hero-stat-val" style="color:var(--green)">6</div><div class="hero-stat-label">Properties</div></div>
+      <div class="hero-stat"><div class="hero-stat-val" style="color:var(--blue)">$20K</div><div class="hero-stat-label">Target</div></div>
+      <div class="hero-stat"><div class="hero-stat-val" style="color:var(--amber)">25%</div><div class="hero-stat-label">Progress</div></div>
+      <div class="hero-stat"><div class="hero-stat-val" style="color:var(--text)">5</div><div class="hero-stat-label">Free & Clear</div></div>
+      <div class="hero-stat"><div class="hero-stat-val" style="color:var(--red)">$15,064</div><div class="hero-stat-label">Gap to Go</div></div>
+    </div>
+  </div>
+  <div class="progress-track"><div class="progress-fill" style="width:25%"></div></div>
+  <div class="progress-labels"><span>$4,936/mo net from 6 properties</span><span>$20,000/mo from 15+ properties</span></div>
+
+  <div class="grid">
+
+    <!-- PORTFOLIO -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Portfolio</span>
+        <span class="card-badge" style="background:var(--green-glow);color:var(--green)">6 Properties</span>
+      </div>
+      <div class="card-body">
+        <div class="prop">
+          <div class="prop-addr">132 Fenwick Dr, St Louis, MO</div>
+          <div class="prop-row"><span>Rent: <strong>$1,450</strong></span><span>Net: <strong style="color:var(--green)">$1,061</strong></span><span>PM: Avenue</span></div>
+        </div>
+        <div class="prop">
+          <div class="prop-addr">516 Alcove Ave, Bellefontaine, MO</div>
+          <div class="prop-row"><span>Rent: <strong>$1,490</strong></span><span>Net: <strong style="color:var(--green)">$1,005</strong></span><span>PM: Avenue</span></div>
+        </div>
+        <div class="prop">
+          <div class="prop-addr">505 W 25th St, Lorain, OH</div>
+          <div class="prop-row"><span>Rent: <strong>$1,383</strong></span><span>Net: <strong style="color:var(--green)">$988</strong></span><span>PM: B2B</span></div>
+        </div>
+        <div class="prop">
+          <div class="prop-addr">5361 Wilborn Dr, St Louis, MO</div>
+          <div class="prop-row"><span>Rent: <strong>$1,400</strong></span><span>Net: <strong style="color:var(--green)">$974</strong></span><span>PM: Avenue</span></div>
+        </div>
+        <div class="prop">
+          <div class="prop-addr">124 Kenilworth Ave, Painesville, OH</div>
+          <div class="prop-row"><span>Rent: <strong>$1,312</strong></span><span>Net: <strong style="color:var(--green)">$598</strong></span><span>PM: B2B</span><span style="color:var(--amber)">Mortgaged</span></div>
+        </div>
+        <div class="prop">
+          <div class="prop-addr">7596 Hazelcrest Dr F, Hazelwood, MO</div>
+          <div class="prop-row"><span>Rent: <strong>$775</strong></span><span>Net: <strong style="color:var(--green)">$309</strong></span><span>PM: Avenue</span><span>2BR</span></div>
+        </div>
+        <div class="prop-totals">
+          <span>Gross: $7,810/mo</span>
+          <span>Net: $4,936/mo</span>
+          <span>PM Fees: $2,874/mo</span>
+          <span>Invested: $539K</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AGENTS -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">29 LaunchAgents</span>
+        <span class="card-badge" style="background:var(--green-glow);color:var(--green)">29/29 Loaded</span>
+      </div>
+      <div class="card-body">
+        <div style="margin-bottom:8px;font-size:11px;color:var(--text3)"><span style="color:var(--green)">&#9679;</span> Always-on &nbsp; <span style="color:var(--blue)">&#9679;</span> Scheduled</div>
+        <div class="agent-grid">
+          <div class="agent-item"><div class="dot on"></div>telegram-bot</div>
+          <div class="agent-item"><div class="dot on"></div>command-centre</div>
+          <div class="agent-item"><div class="dot on"></div>openclaw</div>
+          <div class="agent-item"><div class="dot on"></div>keep-awake</div>
+          <div class="agent-item"><div class="dot sched"></div>agent-healer</div>
+          <div class="agent-item"><div class="dot sched"></div>garry-auto</div>
+          <div class="agent-item"><div class="dot sched"></div>evening-wrap</div>
+          <div class="agent-item"><div class="dot sched"></div>email-scan</div>
+          <div class="agent-item"><div class="dot sched"></div>session-brief</div>
+          <div class="agent-item"><div class="dot sched"></div>overnight</div>
+          <div class="agent-item"><div class="dot sched"></div>memory-guard</div>
+          <div class="agent-item"><div class="dot sched"></div>health-check</div>
+          <div class="agent-item"><div class="dot sched"></div>secret-scan</div>
+          <div class="agent-item"><div class="dot sched"></div>security-audit</div>
+          <div class="agent-item"><div class="dot sched"></div>auto-evolve</div>
+          <div class="agent-item"><div class="dot sched"></div>key-rotation</div>
+          <div class="agent-item"><div class="dot sched"></div>mac-cleanup</div>
+          <div class="agent-item"><div class="dot sched"></div>mcp-fix</div>
+          <div class="agent-item"><div class="dot sched"></div>luke-sync</div>
+          <div class="agent-item"><div class="dot sched"></div>weekly-growth</div>
+          <div class="agent-item"><div class="dot sched"></div>bangkok-picks</div>
+          <div class="agent-item"><div class="dot sched"></div>morning-brief</div>
+          <div class="agent-item"><div class="dot sched"></div>s8-finder</div>
+          <div class="agent-item"><div class="dot sched"></div>s8-autopilot</div>
+          <div class="agent-item"><div class="dot sched"></div>auto-organizer</div>
+          <div class="agent-item"><div class="dot sched"></div>idle-scheduler</div>
+          <div class="agent-item"><div class="dot sched"></div>session-remind</div>
+          <div class="agent-item"><div class="dot sched"></div>memory-check</div>
+          <div class="agent-item"><div class="dot sched"></div>laura-course</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PENDING DECISIONS -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Pending Decisions</span>
+        <span class="card-badge" style="background:var(--amber-glow);color:var(--amber)">4 Active</span>
+      </div>
+      <div class="card-body">
+        <div class="item">
+          <div class="item-title">HAP Tracker — Needs Real Data</div>
+          <div class="item-desc">Scaffolded with portfolio.json. Needs Avenue payment data plugged in.</div>
+          <div class="item-status">PATRICK TO PROVIDE AVENUE HAP DATA</div>
+        </div>
+        <div class="item">
+          <div class="item-title">ASIC Form 6010</div>
+          <div class="item-desc">UHF + Spartans Property online lodgement ready. Fitness Supplies paper form needs posting.</div>
+          <div class="item-status">ONLINE LODGE UHF + SPARTANS. POST FITNESS SUPPLIES FORM.</div>
+        </div>
+        <div class="item">
+          <div class="item-title">Disk Cleanup — Awaiting Approval</div>
+          <div class="item-desc">TFE raw 162GB, CloudKit 53GB, CloudDocs 81GB. Plan ready.</div>
+          <div class="item-status">PATRICK TO APPROVE</div>
+        </div>
+        <div class="item">
+          <div class="item-title">Tomorrowland Thailand Tickets</div>
+          <div class="item-desc">Dec 11-13. On waitlist. Monitoring Exchange Desk + FB group + resale.</div>
+          <div class="item-status">MONITORING — Exchange Desk mid-2026</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEAL PIPELINE -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Deal Pipeline</span>
+        <span class="card-badge" style="background:var(--blue-glow);color:var(--blue)">2 Active</span>
+      </div>
+      <div class="card-body">
+        <div class="item">
+          <div class="item-title">Criterion (63138)</div>
+          <div class="item-desc">$90K counter sent Mar 10. Awaiting seller response.</div>
+          <div class="item-status">BALL IN SELLER'S COURT</div>
+        </div>
+        <div class="item">
+          <div class="item-title">705 Beardsley Ct (63135)</div>
+          <div class="item-desc">INSPECT — roof concern, 161 DOM. Push to $80-85K.</div>
+          <div class="item-status">NEEDS INSPECTION</div>
+        </div>
+        <div class="item" style="border-bottom:none">
+          <div class="item-title" style="color:var(--text2)">Target Criteria</div>
+          <div class="item-desc">3BR STL turnkey, $70-100K, pass HUD/HAP as-is or &lt;$3K GC. Best zips: 63135, 63114, 63138, 63137.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SYSTEM PERFORMANCE -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">System Performance</span>
+        <span class="card-badge" style="background:var(--green-glow);color:var(--green)">Healthy</span>
+      </div>
+      <div class="card-body">
+        <div class="stat-row">
+          <div class="stat-mini"><div class="stat-mini-val" style="color:var(--green)">29</div><div class="stat-mini-label">Agents</div></div>
+          <div class="stat-mini"><div class="stat-mini-val" style="color:var(--blue)">115</div><div class="stat-mini-label">Scripts</div></div>
+          <div class="stat-mini"><div class="stat-mini-val" style="color:var(--purple)">51</div><div class="stat-mini-label">tok/s</div></div>
+          <div class="stat-mini"><div class="stat-mini-val" style="color:var(--amber)">481</div><div class="stat-mini-label">Chunks</div></div>
+        </div>
+        <div style="margin-top:14px">
+          <div class="perf-row"><span class="perf-label">Disk Free</span><span class="perf-val" style="color:var(--green)">765 GB / 926 GB</span></div>
+          <div class="perf-row"><span class="perf-label">Memory</span><span class="perf-val">48 GB &bull; 42% active</span></div>
+          <div class="perf-row"><span class="perf-label">System Utilisation</span><span class="perf-val" style="color:var(--green)">65%</span></div>
+          <div class="perf-row"><span class="perf-label">Devices</span><span class="perf-val">2 (Tailscale mesh)</span></div>
+          <div class="perf-row"><span class="perf-label">Local AI</span><span class="perf-val">llama3.1:8b &bull; $0/query</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KEY DATES -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Key Dates</span>
+        <span class="card-badge" style="background:var(--red-glow);color:var(--red)">Action Needed</span>
+      </div>
+      <div class="card-body">
+        <div class="item">
+          <div class="item-title" style="color:var(--red)">Mar 16 — ATO Payment #3</div>
+          <div class="item-desc">$8,898.60 due tomorrow</div>
+        </div>
+        <div class="item">
+          <div class="item-title" style="color:var(--amber)">Mar 20 — Evernest Termination</div>
+          <div class="item-desc">All files to Avenue Residential. $13,810 settlement payment pending.</div>
+        </div>
+        <div class="item">
+          <div class="item-title">Mar 31 — Ohio Tax Appeals</div>
+          <div class="item-desc">+ Security deposits + ASIC entity closures</div>
+        </div>
+        <div class="item" style="border-bottom:none">
+          <div class="item-title">April — Bangkok Move</div>
+          <div class="item-desc">60-day visa exemption. Line 101 = #1 apartment pick.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  GARRY &bull; Command Centre &bull; Static Snapshot &bull; Mar 15, 2026
+</footer>
+
+</body>
+</html>
