@@ -3,699 +3,525 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GARRY SYSTEM — Mar 14 2026</title>
+<title>GARRY SYSTEM — Mar 15 2026</title>
 <style>
   :root {
-    --bg: #0a0a0f;
-    --bg2: #0f0f1a;
-    --bg3: #14141f;
-    --border: #1e1e2e;
-    --border2: #252535;
-    --text: #e2e2f0;
+    --bg: #08080d;
+    --bg2: #0d0d16;
+    --bg3: #12121c;
+    --border: #1a1a2a;
+    --border2: #222233;
+    --text: #e8e8f4;
     --text2: #8888aa;
-    --text3: #555575;
+    --text3: #555570;
     --green: #22d3a0;
     --green2: #16a37a;
-    --green-glow: rgba(34, 211, 160, 0.15);
+    --green-glow: rgba(34,211,160,0.12);
     --red: #f43f5e;
-    --red2: #be123c;
-    --red-glow: rgba(244, 63, 94, 0.15);
+    --red-glow: rgba(244,63,94,0.12);
     --amber: #f59e0b;
-    --amber-glow: rgba(245, 158, 11, 0.15);
+    --amber-glow: rgba(245,158,11,0.12);
     --blue: #3b82f6;
     --blue2: #1d4ed8;
-    --blue-glow: rgba(59, 130, 246, 0.15);
+    --blue-glow: rgba(59,130,246,0.12);
     --purple: #a855f7;
-    --purple-glow: rgba(168, 85, 247, 0.15);
+    --purple-glow: rgba(168,85,247,0.12);
     --accent: #6366f1;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin:0; padding:0; box-sizing:border-box; }
 
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
     line-height: 1.5;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 
-  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 
-  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
+  /* Subtle grid */
   body::before {
     content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.4;
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(30,30,50,0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30,30,50,0.3) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none; z-index: 0;
   }
 
-  .grid-bg {
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 60px 60px;
-    opacity: 0.3;
-    pointer-events: none;
-    z-index: 0;
+  /* ── NAV ── */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 12px 20px;
+    background: rgba(8,8,13,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .nav-brand {
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text2);
+  }
+  .nav-brand strong { color: var(--text); }
+  .nav-status {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; color: var(--text3);
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .nav-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
   }
 
   /* ── HERO ── */
   .hero {
-    position: relative;
-    z-index: 1;
-    padding: 80px 0 60px;
+    position: relative; z-index: 1;
+    padding: 100px 0 50px;
     text-align: center;
-    border-bottom: 1px solid var(--border);
   }
-
   .hero-eyebrow {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 16px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 20px;
   }
-
   .hero-title {
-    font-size: clamp(32px, 6vw, 64px);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1.05;
-    margin-bottom: 12px;
+    font-size: clamp(40px, 7vw, 72px);
+    font-weight: 800; letter-spacing: -0.04em;
+    line-height: 1;
     background: linear-gradient(135deg, #fff 0%, var(--text2) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
-
   .hero-sub {
-    font-size: 18px;
-    color: var(--text2);
-    max-width: 600px;
-    margin: 0 auto 40px;
+    font-size: 15px; color: var(--text2);
+    margin: 12px auto 0; max-width: 500px;
   }
 
-  /* ── SCORE GAUGES ── */
-  .gauges {
-    display: flex;
-    justify-content: center;
-    gap: 60px;
-    flex-wrap: wrap;
-    margin: 40px 0;
+  /* ── SCORE ROW ── */
+  .score-row {
+    display: flex; justify-content: center;
+    gap: 40px; margin: 40px 0 20px; flex-wrap: wrap;
   }
-
-  .gauge {
-    text-align: center;
-    position: relative;
+  .score-item { text-align: center; }
+  .score-num {
+    font-size: 48px; font-weight: 800;
+    letter-spacing: -0.03em; line-height: 1;
   }
-
-  .gauge svg {
-    width: 160px;
-    height: 160px;
-    transform: rotate(-90deg);
+  .score-label {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text3); margin-top: 6px;
   }
-
-  .gauge-track {
-    fill: none;
-    stroke: var(--border2);
-    stroke-width: 8;
+  .score-sub {
+    font-size: 11px; color: var(--text3); margin-top: 2px;
   }
-
-  .gauge-fill {
-    fill: none;
-    stroke-width: 8;
-    stroke-linecap: round;
-    stroke-dasharray: 408;
-    transition: stroke-dashoffset 2s ease-out;
-  }
-
-  .gauge-label {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-  }
-
-  .gauge-value {
-    font-size: 36px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-  }
-
-  .gauge-unit {
-    font-size: 14px;
-    color: var(--text3);
-    display: block;
-  }
-
-  .gauge-caption {
-    margin-top: 12px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text3);
-  }
-
-  .gauge-date {
-    font-size: 11px;
-    color: var(--text3);
-    margin-top: 4px;
-    opacity: 0.6;
+  .score-divider {
+    width: 1px; background: var(--border2);
+    align-self: stretch; margin: 8px 0;
   }
 
   /* ── SECTIONS ── */
   section {
-    position: relative;
-    z-index: 1;
-    padding: 60px 0;
-    border-bottom: 1px solid var(--border);
+    position: relative; z-index: 1;
+    padding: 50px 0;
   }
-
   .section-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 8px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 6px;
   }
-
   .section-title {
-    font-size: clamp(24px, 4vw, 40px);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 32px;
+    font-size: clamp(22px, 3.5vw, 32px);
+    font-weight: 700; letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  .section-line {
+    height: 1px; background: var(--border);
+    margin: 0;
   }
 
-  /* ── POWER NUMBERS ── */
-  .power-grid {
+  /* ── STAT CARDS ── */
+  .stat-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 40px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
   }
-
-  .power-card {
+  .stat-card {
     background: var(--bg2);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
+    border-radius: 10px; padding: 20px;
     text-align: center;
-    transition: all 0.3s ease;
+    transition: border-color 0.3s;
   }
-
-  .power-card:hover {
-    border-color: var(--border2);
-    transform: translateY(-2px);
-  }
-
-  .power-number {
-    font-size: 40px;
-    font-weight: 800;
+  .stat-card:hover { border-color: var(--border2); }
+  .stat-num {
+    font-size: 32px; font-weight: 800;
     letter-spacing: -0.02em;
-    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 12px; color: var(--text2);
+    font-weight: 500; margin-top: 2px;
+  }
+  .stat-detail {
+    font-size: 10px; color: var(--text3);
+    margin-top: 6px;
   }
 
-  .power-label {
-    font-size: 13px;
-    color: var(--text2);
-    font-weight: 500;
+  /* ── PORTFOLIO ── */
+  .portfolio-hero {
+    background: linear-gradient(135deg, rgba(34,211,160,0.08), rgba(59,130,246,0.08));
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 28px;
+    display: flex; justify-content: space-between;
+    align-items: center; flex-wrap: wrap; gap: 20px;
+    margin-bottom: 24px;
+  }
+  .portfolio-income {
+    font-size: 42px; font-weight: 800;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .portfolio-meta {
+    display: flex; gap: 24px; flex-wrap: wrap;
+  }
+  .portfolio-stat { text-align: center; }
+  .portfolio-stat-val {
+    font-size: 22px; font-weight: 700;
+  }
+  .portfolio-stat-label {
+    font-size: 11px; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .progress-track {
+    height: 6px; background: var(--border);
+    border-radius: 3px; overflow: hidden;
+    margin-top: 16px;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 3px;
+    background: linear-gradient(90deg, var(--green), var(--blue));
+    transition: width 2s ease-out;
+  }
+  .progress-labels {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--text3); margin-top: 6px;
   }
 
-  .power-detail {
-    font-size: 11px;
-    color: var(--text3);
-    margin-top: 8px;
-  }
-
-  /* ── STATUS MATRIX ── */
+  /* ── SYSTEMS MATRIX ── */
   .matrix {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
   }
-
   .matrix-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px 20px;
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px;
     background: var(--bg2);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    transition: all 0.3s ease;
+    border-radius: 8px;
   }
-
-  .matrix-item:hover {
-    border-color: var(--border2);
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%; flex-shrink: 0;
   }
+  .dot.live { background: var(--green); box-shadow: 0 0 6px var(--green-glow); animation: pulse 2s infinite; }
+  .dot.new { background: var(--blue); box-shadow: 0 0 6px var(--blue-glow); }
+  .dot.fix { background: var(--amber); box-shadow: 0 0 6px var(--amber-glow); }
+  .dot.off { background: var(--red); box-shadow: 0 0 6px var(--red-glow); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-  .status-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
+  .m-text { flex: 1; min-width: 0; }
+  .m-name { font-size: 13px; font-weight: 600; }
+  .m-desc { font-size: 11px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .badge {
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 3px; flex-shrink: 0;
   }
-
-  .status-dot.live {
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green-glow);
-    animation: pulse 2s infinite;
-  }
-
-  .status-dot.degraded {
-    background: var(--amber);
-    box-shadow: 0 0 8px var(--amber-glow);
-  }
-
-  .status-dot.new {
-    background: var(--blue);
-    box-shadow: 0 0 8px var(--blue-glow);
-  }
-
-  .status-dot.off {
-    background: var(--red);
-    box-shadow: 0 0 8px var(--red-glow);
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  }
-
-  .matrix-text {
-    flex: 1;
-  }
-
-  .matrix-name {
-    font-size: 14px;
-    font-weight: 600;
-  }
-
-  .matrix-desc {
-    font-size: 12px;
-    color: var(--text3);
-    margin-top: 2px;
-  }
-
-  .matrix-badge {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 4px;
-    flex-shrink: 0;
-  }
-
   .badge-live { background: var(--green-glow); color: var(--green); }
   .badge-new { background: var(--blue-glow); color: var(--blue); }
   .badge-fix { background: var(--amber-glow); color: var(--amber); }
-  .badge-off { background: var(--red-glow); color: var(--red); }
-
-  /* ── DYNO SHEET ── */
-  .dyno {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  .dyno-header {
-    background: var(--bg3);
-    padding: 14px 20px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text3);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .dyno-cell {
-    padding: 14px 20px;
-    font-size: 14px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-  }
-
-  .dyno-cell:nth-child(4n+1) {
-    font-weight: 600;
-    color: var(--text2);
-  }
-
-  .dyno-cell.old { color: var(--text3); }
-
-  .dyno-cell.current {
-    color: var(--green);
-    font-weight: 600;
-  }
-
-  .dyno-cell.target {
-    color: var(--blue);
-  }
-
-  /* ── UPGRADES ── */
-  .upgrades {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-  }
-
-  .upgrade-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 28px;
-    transition: all 0.3s ease;
-  }
-
-  .upgrade-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-  }
-
-  .upgrade-icon {
-    font-size: 28px;
-    margin-bottom: 12px;
-  }
-
-  .upgrade-title {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-
-  .upgrade-desc {
-    font-size: 13px;
-    color: var(--text2);
-    line-height: 1.6;
-  }
-
-  .upgrade-tag {
-    display: inline-block;
-    margin-top: 12px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 3px 10px;
-    border-radius: 4px;
-    background: var(--green-glow);
-    color: var(--green);
-  }
-
-  /* ── ROADMAP ── */
-  .roadmap {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
-  }
-
-  .roadmap-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 28px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .roadmap-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-  }
-
-  .roadmap-card.done::before { background: var(--green); }
-  .roadmap-card.active::before { background: var(--blue); }
-  .roadmap-card.next::before { background: var(--amber); }
-  .roadmap-card.future::before { background: var(--text3); }
-
-  .roadmap-phase {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .roadmap-card.done .roadmap-phase { color: var(--green); }
-  .roadmap-card.active .roadmap-phase { color: var(--blue); }
-  .roadmap-card.next .roadmap-phase { color: var(--amber); }
-  .roadmap-card.future .roadmap-phase { color: var(--text3); }
-
-  .roadmap-title {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
-
-  .roadmap-items {
-    list-style: none;
-    font-size: 13px;
-    color: var(--text2);
-  }
-
-  .roadmap-items li {
-    padding: 4px 0;
-    padding-left: 16px;
-    position: relative;
-  }
-
-  .roadmap-items li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 10px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--border2);
-  }
-
-  .roadmap-card.done .roadmap-items li::before { background: var(--green); }
-  .roadmap-card.active .roadmap-items li::before { background: var(--blue); }
 
   /* ── AGENT GRID ── */
   .agent-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 8px;
   }
-
   .agent-card {
     background: var(--bg2);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    border-radius: 6px; padding: 10px 12px;
+    display: flex; align-items: center; gap: 8px;
   }
-
-  .agent-card .status-dot { width: 8px; height: 8px; }
-
+  .agent-card .dot { width: 6px; height: 6px; }
   .agent-name {
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 11px; font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
-  /* ── VISION BAR ── */
-  .vision-bar {
-    display: flex;
-    gap: 2px;
-    height: 32px;
-    border-radius: 8px;
-    overflow: hidden;
-    margin: 20px 0;
+  /* ── DYNO TABLE ── */
+  .dyno {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden;
+  }
+  .dyno-h {
+    background: var(--bg3); padding: 10px 16px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text3); border-bottom: 1px solid var(--border);
+  }
+  .dyno-c {
+    padding: 10px 16px; font-size: 13px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+  }
+  .dyno-c:nth-child(4n+1) { font-weight: 600; color: var(--text2); }
+  .dyno-c.old { color: var(--text3); }
+  .dyno-c.now { color: var(--green); font-weight: 600; }
+  .dyno-c.tgt { color: var(--blue); }
+
+  /* ── ROADMAP ── */
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .rm-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 22px;
+    position: relative; overflow: hidden;
+  }
+  .rm-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  }
+  .rm-card.done::before { background: var(--green); }
+  .rm-card.active::before { background: var(--blue); }
+  .rm-card.next::before { background: var(--amber); }
+  .rm-card.future::before { background: var(--text3); }
+  .rm-phase {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .rm-card.done .rm-phase { color: var(--green); }
+  .rm-card.active .rm-phase { color: var(--blue); }
+  .rm-card.next .rm-phase { color: var(--amber); }
+  .rm-card.future .rm-phase { color: var(--text3); }
+  .rm-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+  .rm-items { list-style: none; font-size: 12px; color: var(--text2); }
+  .rm-items li { padding: 3px 0 3px 14px; position: relative; }
+  .rm-items li::before {
+    content:''; position:absolute; left:0; top:9px;
+    width:5px; height:5px; border-radius:50%;
+    background: var(--border2);
+  }
+  .rm-card.done .rm-items li::before { background: var(--green); }
+  .rm-card.active .rm-items li::before { background: var(--blue); }
+
+  /* ── UPGRADE CARDS ── */
+  .upgrades {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .up-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 22px;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .up-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .up-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .up-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+  .up-tag {
+    display: inline-block; margin-top: 10px;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 3px;
+    background: var(--green-glow); color: var(--green);
   }
 
-  .vision-segment {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 700;
-    color: #000;
-    transition: flex 2s ease-out;
+  /* ── HEALTH BARS ── */
+  .health-row { margin-top: 20px; }
+  .health-item { margin-bottom: 14px; }
+  .health-label {
+    display: flex; justify-content: space-between;
+    font-size: 12px; margin-bottom: 4px;
+  }
+  .health-label span:first-child { color: var(--text2); }
+  .health-label span:last-child { font-weight: 700; }
+  .health-bar {
+    height: 5px; background: var(--border);
+    border-radius: 3px; overflow: hidden;
+  }
+  .health-fill {
+    height: 100%; border-radius: 3px;
+    transition: width 2s ease-out;
   }
 
   /* ── FOOTER ── */
   footer {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    padding: 40px 0;
-    color: var(--text3);
-    font-size: 12px;
+    position: relative; z-index: 1;
+    text-align: center; padding: 30px 0;
+    color: var(--text3); font-size: 11px;
+    letter-spacing: 0.05em;
   }
 
   /* ── ANIMATIONS ── */
   .fade-up {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
   }
-
-  .fade-up.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* ── HEALTH BAR ── */
-  .health-bar-wrap {
-    margin: 30px 0 10px;
-  }
-
-  .health-bar-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    margin-bottom: 8px;
-  }
-
-  .health-bar-label span:first-child { color: var(--text2); }
-  .health-bar-label span:last-child { font-weight: 700; }
-
-  .health-bar {
-    height: 8px;
-    background: var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .health-fill {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 2s ease-out;
-  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
 
   @media (max-width: 768px) {
-    .gauges { gap: 30px; }
+    .score-row { gap: 20px; }
+    .score-num { font-size: 36px; }
     .dyno { grid-template-columns: 1fr 1fr; }
-    .power-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .portfolio-hero { flex-direction: column; text-align: center; }
   }
 </style>
 </head>
 <body>
-<div class="grid-bg"></div>
 
-<!-- ══════════════════════════════ HERO ══════════════════════════════ -->
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-brand"><strong>GARRY</strong> &nbsp;SYSTEM</div>
+  <div class="nav-status">
+    <div class="nav-dot"></div>
+    ALL SYSTEMS OPERATIONAL
+  </div>
+</div>
+
+<!-- ══════ HERO ══════ -->
 <div class="hero">
   <div class="container">
-    <div class="hero-eyebrow">System Assessment &mdash; March 14, 2026</div>
+    <div class="hero-eyebrow">Autonomous COO &mdash; March 15, 2026</div>
     <h1 class="hero-title">GARRY</h1>
-    <p class="hero-sub">COO System &bull; Mac Mini M4 Pro &bull; 48GB RAM &bull; Apple Neural Engine</p>
+    <p class="hero-sub">Mac Mini M4 Pro &bull; 48GB RAM &bull; Apple Neural Engine</p>
 
-    <div class="gauges">
-      <div class="gauge fade-up">
-        <svg viewBox="0 0 140 140">
-          <circle class="gauge-track" cx="70" cy="70" r="65"/>
-          <circle class="gauge-fill" cx="70" cy="70" r="65" stroke="var(--text3)" style="stroke-dashoffset: 367"/>
-        </svg>
-        <div class="gauge-label">
-          <span class="gauge-value" style="color:var(--text3)">4</span>
-          <span class="gauge-unit">/10</span>
-        </div>
-        <div class="gauge-caption">Before</div>
-        <div class="gauge-date">Jan 2026</div>
+    <div class="score-row">
+      <div class="score-item fade-up">
+        <div class="score-num" style="color:var(--text3)">4</div>
+        <div class="score-label">Before</div>
+        <div class="score-sub">Jan 2026</div>
       </div>
-
-      <div class="gauge fade-up" style="transition-delay: 0.15s">
-        <svg viewBox="0 0 140 140">
-          <circle class="gauge-track" cx="70" cy="70" r="65"/>
-          <circle class="gauge-fill" cx="70" cy="70" r="65" stroke="var(--green)" style="stroke-dashoffset: 204"/>
-        </svg>
-        <div class="gauge-label">
-          <span class="gauge-value" style="color:var(--green)">7.5</span>
-          <span class="gauge-unit">/10</span>
-        </div>
-        <div class="gauge-caption">Now</div>
-        <div class="gauge-date">Mar 14, 2026</div>
+      <div class="score-divider"></div>
+      <div class="score-item fade-up" style="transition-delay:0.1s">
+        <div class="score-num" style="color:var(--green)">8.5</div>
+        <div class="score-label">Current</div>
+        <div class="score-sub">Mar 15, 2026</div>
       </div>
-
-      <div class="gauge fade-up" style="transition-delay: 0.3s">
-        <svg viewBox="0 0 140 140">
-          <circle class="gauge-track" cx="70" cy="70" r="65"/>
-          <circle class="gauge-fill" cx="70" cy="70" r="65" stroke="var(--blue)" style="stroke-dashoffset: 81"/>
-        </svg>
-        <div class="gauge-label">
-          <span class="gauge-value" style="color:var(--blue)">9.5</span>
-          <span class="gauge-unit">/10</span>
-        </div>
-        <div class="gauge-caption">Target</div>
-        <div class="gauge-date">Q2 2026</div>
+      <div class="score-divider"></div>
+      <div class="score-item fade-up" style="transition-delay:0.2s">
+        <div class="score-num" style="color:var(--blue)">10</div>
+        <div class="score-label">Target</div>
+        <div class="score-sub">Q2 2026</div>
       </div>
-    </div>
-
-    <div style="margin-top:10px; font-size:14px; color:var(--text2)">
-      +87.5% from baseline &bull; +15% since last report
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════ POWER NUMBERS ══════════════════════════════ -->
+<div class="section-line"></div>
+
+<!-- ══════ PORTFOLIO ══════ -->
 <section>
   <div class="container">
-    <div class="section-label">The Numbers</div>
-    <h2 class="section-title fade-up">Power at a Glance</h2>
+    <div class="section-label">Portfolio</div>
+    <div class="portfolio-hero fade-up">
+      <div>
+        <div style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:4px">Monthly Net Income</div>
+        <div class="portfolio-income">$4,936</div>
+      </div>
+      <div class="portfolio-meta">
+        <div class="portfolio-stat">
+          <div class="portfolio-stat-val" style="color:var(--green)">6</div>
+          <div class="portfolio-stat-label">Properties</div>
+        </div>
+        <div class="portfolio-stat">
+          <div class="portfolio-stat-val" style="color:var(--blue)">$20K</div>
+          <div class="portfolio-stat-label">Target</div>
+        </div>
+        <div class="portfolio-stat">
+          <div class="portfolio-stat-val" style="color:var(--amber)">25%</div>
+          <div class="portfolio-stat-label">Progress</div>
+        </div>
+      </div>
+    </div>
+    <div class="progress-track fade-up">
+      <div class="progress-fill" style="width:25%"></div>
+    </div>
+    <div class="progress-labels fade-up">
+      <span>6 properties &bull; $4,936/mo</span>
+      <span>15+ properties &bull; $20,000/mo</span>
+    </div>
+  </div>
+</section>
 
-    <div class="power-grid">
-      <div class="power-card fade-up">
-        <div class="power-number" style="color:var(--green)">26</div>
-        <div class="power-label">LaunchAgents</div>
-        <div class="power-detail">Automated background workers</div>
+<div class="section-line"></div>
+
+<!-- ══════ POWER NUMBERS ══════ -->
+<section>
+  <div class="container">
+    <div class="section-label">Infrastructure</div>
+    <h2 class="section-title fade-up">System at a Glance</h2>
+
+    <div class="stat-grid">
+      <div class="stat-card fade-up">
+        <div class="stat-num" style="color:var(--green)">29</div>
+        <div class="stat-label">LaunchAgents</div>
+        <div class="stat-detail">4 always-on &bull; 25 scheduled</div>
       </div>
-      <div class="power-card fade-up" style="transition-delay:0.1s">
-        <div class="power-number" style="color:var(--blue)">112</div>
-        <div class="power-label">Scripts</div>
-        <div class="power-detail">Python automation library</div>
+      <div class="stat-card fade-up" style="transition-delay:0.05s">
+        <div class="stat-num" style="color:var(--blue)">115</div>
+        <div class="stat-label">Scripts</div>
+        <div class="stat-detail">Python &bull; Shell &bull; Node</div>
       </div>
-      <div class="power-card fade-up" style="transition-delay:0.2s">
-        <div class="power-number" style="color:var(--purple)">51</div>
-        <div class="power-label">tok/sec</div>
-        <div class="power-detail">Local AI inference &bull; $0 cost</div>
+      <div class="stat-card fade-up" style="transition-delay:0.1s">
+        <div class="stat-num" style="color:var(--purple)">51</div>
+        <div class="stat-label">tok/sec</div>
+        <div class="stat-detail">Ollama llama3.1 &bull; $0</div>
       </div>
-      <div class="power-card fade-up" style="transition-delay:0.3s">
-        <div class="power-number" style="color:var(--amber)">481</div>
-        <div class="power-label">Memory Chunks</div>
-        <div class="power-detail">ChromaDB semantic search</div>
+      <div class="stat-card fade-up" style="transition-delay:0.15s">
+        <div class="stat-num" style="color:var(--amber)">481</div>
+        <div class="stat-label">Memory Chunks</div>
+        <div class="stat-detail">ChromaDB semantic search</div>
       </div>
-      <div class="power-card fade-up" style="transition-delay:0.4s">
-        <div class="power-number" style="color:var(--green)">771<span style="font-size:20px">GB</span></div>
-        <div class="power-label">Free Disk</div>
-        <div class="power-detail">926GB total &bull; 2% used</div>
+      <div class="stat-card fade-up" style="transition-delay:0.2s">
+        <div class="stat-num" style="color:var(--green)">765<span style="font-size:16px">GB</span></div>
+        <div class="stat-label">Free Disk</div>
+        <div class="stat-detail">926GB total</div>
       </div>
-      <div class="power-card fade-up" style="transition-delay:0.5s">
-        <div class="power-number" style="color:var(--blue)">2</div>
-        <div class="power-label">Devices Linked</div>
-        <div class="power-detail">Tailscale mesh &bull; works anywhere</div>
+      <div class="stat-card fade-up" style="transition-delay:0.25s">
+        <div class="stat-num" style="color:var(--blue)">2</div>
+        <div class="stat-label">Devices</div>
+        <div class="stat-detail">Tailscale mesh</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════ SYSTEM STATUS ══════════════════════════════ -->
+<div class="section-line"></div>
+
+<!-- ══════ LIVE SYSTEMS ══════ -->
 <section>
   <div class="container">
     <div class="section-label">Live Systems</div>
@@ -703,358 +529,351 @@
 
     <div class="matrix">
       <div class="matrix-item fade-up">
-        <div class="status-dot live"></div>
-        <div class="matrix-text">
-          <div class="matrix-name">Telegram Bot v5</div>
-          <div class="matrix-desc">3-tier routing &bull; Ollama fast-path &bull; 24h context</div>
+        <div class="dot live"></div>
+        <div class="m-text">
+          <div class="m-name">Telegram Bot v6</div>
+          <div class="m-desc">Inline buttons &bull; deal pipeline &bull; /deals /portfolio</div>
         </div>
-        <span class="matrix-badge badge-live">Live</span>
+        <span class="badge badge-live">Live</span>
       </div>
-
       <div class="matrix-item fade-up">
-        <div class="status-dot live"></div>
-        <div class="matrix-text">
-          <div class="matrix-name">Command Centre</div>
-          <div class="matrix-desc">Dashboard &bull; port 3847 &bull; Tailscale accessible</div>
+        <div class="dot live"></div>
+        <div class="m-text">
+          <div class="m-name">Command Centre</div>
+          <div class="m-desc">Dashboard v2 &bull; port 3847 &bull; Tailscale</div>
         </div>
-        <span class="matrix-badge badge-live">Live</span>
+        <span class="badge badge-live">Live</span>
       </div>
-
       <div class="matrix-item fade-up">
-        <div class="status-dot live"></div>
-        <div class="matrix-text">
-          <div class="matrix-name">Ollama (llama3.1:8b)</div>
-          <div class="matrix-desc">Local AI &bull; 51 tok/s &bull; $0/query</div>
+        <div class="dot live"></div>
+        <div class="m-text">
+          <div class="m-name">Ollama</div>
+          <div class="m-desc">llama3.1:8b &bull; 51 tok/s &bull; $0/query</div>
         </div>
-        <span class="matrix-badge badge-live">Live</span>
+        <span class="badge badge-live">Live</span>
       </div>
-
       <div class="matrix-item fade-up">
-        <div class="status-dot live"></div>
-        <div class="matrix-text">
-          <div class="matrix-name">Email Scanner</div>
-          <div class="matrix-desc">IMAP &bull; 20 tracked contacts &bull; 30min cycle</div>
+        <div class="dot live"></div>
+        <div class="m-text">
+          <div class="m-name">Email Scanner</div>
+          <div class="m-desc">IMAP + MCP &bull; inbox + sent tracking</div>
         </div>
-        <span class="matrix-badge badge-live">Live</span>
+        <span class="badge badge-live">Live</span>
       </div>
-
       <div class="matrix-item fade-up">
-        <div class="status-dot new"></div>
-        <div class="matrix-text">
-          <div class="matrix-name">Morning Brief v3</div>
-          <div class="matrix-desc">15 lines &bull; money first &bull; live email + calendar</div>
+        <div class="dot live"></div>
+        <div class="m-text">
+          <div class="m-name">Morning Brief v3</div>
+          <div class="m-desc">Live email pull &bull; money first &bull; 15 lines</div>
         </div>
-        <span class="matrix-badge badge-new">New</span>
+        <span class="badge badge-live">Live</span>
       </div>
-
       <div class="matrix-item fade-up">
-        <div class="status-dot new"></div>
-        <div class="matrix-text">
-          <div class="matrix-name">Calendar Integration</div>
-          <div class="matrix-desc">Google Calendar API &bull; MCP inject path</div>
+        <div class="dot live"></div>
+        <div class="m-text">
+          <div class="m-name">Gmail + Calendar MCP</div>
+          <div class="m-desc">Live in Claude sessions &bull; read + write</div>
         </div>
-        <span class="matrix-badge badge-new">New</span>
+        <span class="badge badge-live">Live</span>
       </div>
-
       <div class="matrix-item fade-up">
-        <div class="status-dot live"></div>
-        <div class="matrix-text">
-          <div class="matrix-name">ChromaDB Memory</div>
-          <div class="matrix-desc">481 chunks &bull; semantic search &bull; all-MiniLM-L6-v2</div>
+        <div class="dot live"></div>
+        <div class="m-text">
+          <div class="m-name">ChromaDB Memory</div>
+          <div class="m-desc">481 chunks &bull; all-MiniLM-L6-v2</div>
         </div>
-        <span class="matrix-badge badge-live">Live</span>
+        <span class="badge badge-live">Live</span>
       </div>
-
       <div class="matrix-item fade-up">
-        <div class="status-dot live"></div>
-        <div class="matrix-text">
-          <div class="matrix-name">Gmail + Google Cal MCP</div>
-          <div class="matrix-desc">Live email + calendar in Claude sessions</div>
+        <div class="dot live"></div>
+        <div class="m-text">
+          <div class="m-name">Deal Finder v2</div>
+          <div class="m-desc">1,059 properties &bull; HAP scoring &bull; S8 Pro API</div>
         </div>
-        <span class="matrix-badge badge-live">Live</span>
+        <span class="badge badge-live">Live</span>
       </div>
-
       <div class="matrix-item fade-up">
-        <div class="status-dot live"></div>
-        <div class="matrix-text">
-          <div class="matrix-name">Deal Finder v2</div>
-          <div class="matrix-desc">636 properties scored &bull; HAP detection &bull; lot/sqft/DOM</div>
+        <div class="dot live"></div>
+        <div class="m-text">
+          <div class="m-name">HAP Tracker</div>
+          <div class="m-desc">6 properties &bull; late alerts &bull; variance calc</div>
         </div>
-        <span class="matrix-badge badge-live">Live</span>
+        <span class="badge badge-new">New</span>
       </div>
-
       <div class="matrix-item fade-up">
-        <div class="status-dot live"></div>
-        <div class="matrix-text">
-          <div class="matrix-name">Tailscale Mesh</div>
-          <div class="matrix-desc">Mac Mini + MacBook Air &bull; global access</div>
+        <div class="dot live"></div>
+        <div class="m-text">
+          <div class="m-name">Evening Wrap</div>
+          <div class="m-desc">7pm Telegram &bull; auto CURRENT-STATE.md</div>
         </div>
-        <span class="matrix-badge badge-live">Live</span>
+        <span class="badge badge-new">New</span>
       </div>
-
       <div class="matrix-item fade-up">
-        <div class="status-dot live"></div>
-        <div class="matrix-text">
-          <div class="matrix-name">Security Layer</div>
-          <div class="matrix-desc">Vault &bull; backups &bull; pre-commit hooks &bull; FileVault</div>
+        <div class="dot live"></div>
+        <div class="m-text">
+          <div class="m-name">Agent Healer</div>
+          <div class="m-desc">Self-healing &bull; 5m/15m/1hr backoff</div>
         </div>
-        <span class="matrix-badge badge-live">Live</span>
+        <span class="badge badge-new">New</span>
       </div>
-
       <div class="matrix-item fade-up">
-        <div class="status-dot degraded"></div>
-        <div class="matrix-text">
-          <div class="matrix-name">Overnight Pipeline</div>
-          <div class="matrix-desc">Agent dormant &bull; script ready &bull; needs restart</div>
+        <div class="dot live"></div>
+        <div class="m-text">
+          <div class="m-name">Security Layer</div>
+          <div class="m-desc">Vault &bull; hourly backups &bull; FileVault &bull; pre-commit</div>
         </div>
-        <span class="matrix-badge badge-fix">Fix</span>
+        <span class="badge badge-live">Live</span>
+      </div>
+      <div class="matrix-item fade-up">
+        <div class="dot live"></div>
+        <div class="m-text">
+          <div class="m-name">Tailscale Mesh</div>
+          <div class="m-desc">Mac Mini + MacBook Air &bull; global</div>
+        </div>
+        <span class="badge badge-live">Live</span>
+      </div>
+      <div class="matrix-item fade-up">
+        <div class="dot live"></div>
+        <div class="m-text">
+          <div class="m-name">Overnight Pipeline</div>
+          <div class="m-desc">2am &bull; property refresh &bull; memory index &bull; cleanup</div>
+        </div>
+        <span class="badge badge-live">Live</span>
       </div>
     </div>
 
-    <!-- HEALTH BARS -->
-    <div class="health-bar-wrap fade-up" style="margin-top:40px">
-      <div class="health-bar-label">
-        <span>CPU Utilisation</span>
-        <span style="color:var(--green)">65%</span>
+    <!-- Health bars -->
+    <div class="health-row fade-up">
+      <div class="health-item">
+        <div class="health-label">
+          <span>System Utilisation</span>
+          <span style="color:var(--green)">65%</span>
+        </div>
+        <div class="health-bar">
+          <div class="health-fill" style="width:65%; background:linear-gradient(90deg,var(--green2),var(--green))"></div>
+        </div>
       </div>
-      <div class="health-bar">
-        <div class="health-fill" style="width:65%; background: linear-gradient(90deg, var(--green2), var(--green))"></div>
+      <div class="health-item">
+        <div class="health-label">
+          <span>Memory (48GB)</span>
+          <span style="color:var(--green)">42%</span>
+        </div>
+        <div class="health-bar">
+          <div class="health-fill" style="width:42%; background:linear-gradient(90deg,var(--blue2),var(--blue))"></div>
+        </div>
       </div>
-    </div>
-
-    <div class="health-bar-wrap fade-up">
-      <div class="health-bar-label">
-        <span>Memory (48GB)</span>
-        <span style="color:var(--green)">42% active</span>
-      </div>
-      <div class="health-bar">
-        <div class="health-fill" style="width:42%; background: linear-gradient(90deg, var(--blue2), var(--blue))"></div>
-      </div>
-    </div>
-
-    <div class="health-bar-wrap fade-up">
-      <div class="health-bar-label">
-        <span>Disk (926GB)</span>
-        <span style="color:var(--green)">2% used</span>
-      </div>
-      <div class="health-bar">
-        <div class="health-fill" style="width:2%; background: linear-gradient(90deg, var(--green2), var(--green))"></div>
-      </div>
-    </div>
-
-    <div class="health-bar-wrap fade-up">
-      <div class="health-bar-label">
-        <span>LaunchAgents Health</span>
-        <span style="color:var(--amber)">19/26 clean</span>
-      </div>
-      <div class="health-bar">
-        <div class="health-fill" style="width:73%; background: linear-gradient(90deg, var(--amber), var(--green))"></div>
+      <div class="health-item">
+        <div class="health-label">
+          <span>Agent Health</span>
+          <span style="color:var(--green)">29/29 loaded</span>
+        </div>
+        <div class="health-bar">
+          <div class="health-fill" style="width:100%; background:linear-gradient(90deg,var(--green2),var(--green))"></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════ AGENTS ══════════════════════════════ -->
+<div class="section-line"></div>
+
+<!-- ══════ 29 AGENTS ══════ -->
 <section>
   <div class="container">
     <div class="section-label">Background Workers</div>
-    <h2 class="section-title fade-up">26 LaunchAgents</h2>
+    <h2 class="section-title fade-up">29 LaunchAgents</h2>
+
+    <div style="margin-bottom:14px; font-size:12px; color:var(--text3)">
+      <span style="color:var(--green)">&#9679;</span> Always-on &nbsp;&nbsp;
+      <span style="color:var(--blue)">&#9679;</span> Scheduled &nbsp;&nbsp;
+      <span style="color:var(--amber)">&#9679;</span> Needs attention
+    </div>
 
     <div class="agent-grid">
-      <div class="agent-card"><div class="status-dot live"></div><div class="agent-name">telegram-bot</div></div>
-      <div class="agent-card"><div class="status-dot live"></div><div class="agent-name">command-centre</div></div>
-      <div class="agent-card"><div class="status-dot live"></div><div class="agent-name">openclaw-gateway</div></div>
-      <div class="agent-card"><div class="status-dot live"></div><div class="agent-name">keep-awake</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">email-scan-cache</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">session-brief</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">overnight-tasks</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">memory-guardian</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">mac-cleanup</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">key-rotation</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">health-check</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">garry-autonomous</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">secret-scanner</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">auto-evolve</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">auto-organizer</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">idle-scheduler</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">mcp-extension-fix</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">luke-repo-sync</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">weekly-growth</div></div>
-      <div class="agent-card"><div class="status-dot" style="background:var(--green)"></div><div class="agent-name">bangkok-picks</div></div>
-      <div class="agent-card"><div class="status-dot degraded"></div><div class="agent-name">morning-brief</div></div>
-      <div class="agent-card"><div class="status-dot degraded"></div><div class="agent-name">session-reminder</div></div>
-      <div class="agent-card"><div class="status-dot degraded"></div><div class="agent-name">s8-property-finder</div></div>
-      <div class="agent-card"><div class="status-dot degraded"></div><div class="agent-name">memory-check</div></div>
-      <div class="agent-card"><div class="status-dot degraded"></div><div class="agent-name">laura-course</div></div>
-      <div class="agent-card"><div class="status-dot off"></div><div class="agent-name">security-audit</div></div>
+      <div class="agent-card"><div class="dot live"></div><div class="agent-name">telegram-bot</div></div>
+      <div class="agent-card"><div class="dot live"></div><div class="agent-name">command-centre</div></div>
+      <div class="agent-card"><div class="dot live"></div><div class="agent-name">openclaw-gateway</div></div>
+      <div class="agent-card"><div class="dot live"></div><div class="agent-name">keep-awake</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">agent-healer</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">evening-wrap</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">garry-autonomous</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">email-scan-cache</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">session-brief</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">overnight-tasks</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">memory-guardian</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">mac-cleanup</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">key-rotation</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">health-check</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">secret-scanner</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">security-audit</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">auto-evolve</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">auto-organizer</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">idle-scheduler</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">mcp-extension-fix</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">luke-repo-sync</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">weekly-growth</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">bangkok-picks</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">morning-brief</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">session-reminder</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">s8-property-finder</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">memory-check</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">laura-course</div></div>
+      <div class="agent-card"><div class="dot new"></div><div class="agent-name">s8-autopilot</div></div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════ UPGRADES SINCE LAST REPORT ══════════════════════════════ -->
+<div class="section-line"></div>
+
+<!-- ══════ RECENT UPGRADES ══════ -->
 <section>
   <div class="container">
-    <div class="section-label">Since Last Report</div>
-    <h2 class="section-title fade-up">What Changed</h2>
+    <div class="section-label">Shipped</div>
+    <h2 class="section-title fade-up">Recent Upgrades</h2>
 
     <div class="upgrades">
-      <div class="upgrade-card fade-up">
-        <div class="upgrade-icon">&#9889;</div>
-        <div class="upgrade-title">Morning Brief v3</div>
-        <div class="upgrade-desc">Rebuilt from scratch. 15 lines (was 36). Money first, fire items, smart email summaries, calendar events. No more stale JSON — everything live.</div>
-        <span class="upgrade-tag">Shipped today</span>
+      <div class="up-card fade-up">
+        <div class="up-title">SessionStart v2</div>
+        <div class="up-desc">COO-grade briefing. Money pulse, sent email tracking, time-aware tone, stall detection, tomorrow preview. 400 tokens max.</div>
+        <span class="up-tag">Mar 15</span>
       </div>
-
-      <div class="upgrade-card fade-up" style="transition-delay:0.1s">
-        <div class="upgrade-icon">&#128197;</div>
-        <div class="upgrade-title">Google Calendar Integration</div>
-        <div class="upgrade-desc">Calendar events now feed into morning brief and session starts. MCP inject path for Claude sessions, API path for automation.</div>
-        <span class="upgrade-tag">Shipped today</span>
+      <div class="up-card fade-up" style="transition-delay:0.05s">
+        <div class="up-title">HAP Tracker</div>
+        <div class="up-desc">Tracks all 6 property HAP payments. Alerts if >5 days late. Variance calculation with dollar impact.</div>
+        <span class="up-tag">Mar 14</span>
       </div>
-
-      <div class="upgrade-card fade-up" style="transition-delay:0.2s">
-        <div class="upgrade-icon">&#127760;</div>
-        <div class="upgrade-title">Tailscale Remote Access</div>
-        <div class="upgrade-desc">Command Centre dashboard now accessible from MacBook Air anywhere in the world. No port forwarding, no VPN setup needed.</div>
-        <span class="upgrade-tag">Shipped today</span>
+      <div class="up-card fade-up" style="transition-delay:0.1s">
+        <div class="up-title">Evening Wrap</div>
+        <div class="up-desc">7pm Telegram summary + auto-generates CURRENT-STATE.md from live data for next session handoff.</div>
+        <span class="up-tag">Mar 14</span>
       </div>
-
-      <div class="upgrade-card fade-up" style="transition-delay:0.3s">
-        <div class="upgrade-icon">&#128640;</div>
-        <div class="upgrade-title">SessionStart Rewrite</div>
-        <div class="upgrade-desc">Live Gmail + Calendar pull before speaking. Two-bucket format: "Needs You" (ranked P1-P4) vs "Garry's Handling". No more stale cached files.</div>
-        <span class="upgrade-tag">Mar 14</span>
+      <div class="up-card fade-up" style="transition-delay:0.15s">
+        <div class="up-title">Agent Healer</div>
+        <div class="up-desc">Self-healing with exponential backoff (5m/15m/1hr). Monitors 4 always-on + 25 scheduled agents.</div>
+        <span class="up-tag">Mar 14</span>
       </div>
-
-      <div class="upgrade-card fade-up" style="transition-delay:0.4s">
-        <div class="upgrade-icon">&#128269;</div>
-        <div class="upgrade-title">Deal Finder v2</div>
-        <div class="upgrade-desc">Lot size, sqft, exterior photos, DOM scoring. Expanded HAP keyword detection. 636 MO properties scored with S8 Pro API integration.</div>
-        <span class="upgrade-tag">Mar 13</span>
+      <div class="up-card fade-up" style="transition-delay:0.2s">
+        <div class="up-title">Morning Brief v3</div>
+        <div class="up-desc">15-line max. Money first, live email + calendar pull, new replies + sent tracking, stale flagging.</div>
+        <span class="up-tag">Mar 13</span>
       </div>
-
-      <div class="upgrade-card fade-up" style="transition-delay:0.5s">
-        <div class="upgrade-icon">&#129302;</div>
-        <div class="upgrade-title">Garry Agent System</div>
-        <div class="upgrade-desc">COO with 4 specialist agents: Atlas (Finance), Mercury (Ops), Sentinel (Risk), Apollo (Comms). Haiku-powered for cost efficiency.</div>
-        <span class="upgrade-tag">Feb 26</span>
+      <div class="up-card fade-up" style="transition-delay:0.25s">
+        <div class="up-title">Deal Finder v2</div>
+        <div class="up-desc">1,059 MO properties via S8 Pro API. Lot/sqft/photo/DOM scoring. Expanded HAP keyword detection.</div>
+        <span class="up-tag">Mar 12</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════ DYNO SHEET ══════════════════════════════ -->
+<div class="section-line"></div>
+
+<!-- ══════ DYNO SHEET ══════ -->
 <section>
   <div class="container">
-    <div class="section-label">Performance Comparison</div>
-    <h2 class="section-title fade-up">Dyno Sheet</h2>
+    <div class="section-label">Evolution</div>
+    <h2 class="section-title fade-up">Then vs Now</h2>
 
     <div class="dyno fade-up">
-      <div class="dyno-header">Metric</div>
-      <div class="dyno-header">Jan 2026</div>
-      <div class="dyno-header">Mar 14</div>
-      <div class="dyno-header">Target</div>
+      <div class="dyno-h">Metric</div>
+      <div class="dyno-h">Jan 2026</div>
+      <div class="dyno-h">Mar 15</div>
+      <div class="dyno-h">Target</div>
 
-      <div class="dyno-cell">Local AI</div>
-      <div class="dyno-cell old">None</div>
-      <div class="dyno-cell current">51 tok/s</div>
-      <div class="dyno-cell target">100+ tok/s</div>
+      <div class="dyno-c">Local AI</div>
+      <div class="dyno-c old">None</div>
+      <div class="dyno-c now">51 tok/s</div>
+      <div class="dyno-c tgt">100+ tok/s</div>
 
-      <div class="dyno-cell">Background Agents</div>
-      <div class="dyno-cell old">0</div>
-      <div class="dyno-cell current">26</div>
-      <div class="dyno-cell target">30+</div>
+      <div class="dyno-c">Background Agents</div>
+      <div class="dyno-c old">0</div>
+      <div class="dyno-c now">29</div>
+      <div class="dyno-c tgt">30+</div>
 
-      <div class="dyno-cell">Automation Scripts</div>
-      <div class="dyno-cell old">3</div>
-      <div class="dyno-cell current">112</div>
-      <div class="dyno-cell target">150</div>
+      <div class="dyno-c">Automation Scripts</div>
+      <div class="dyno-c old">3</div>
+      <div class="dyno-c now">115</div>
+      <div class="dyno-c tgt">150</div>
 
-      <div class="dyno-cell">Memory Chunks</div>
-      <div class="dyno-cell old">0</div>
-      <div class="dyno-cell current">481</div>
-      <div class="dyno-cell target">2,000+</div>
+      <div class="dyno-c">Memory Chunks</div>
+      <div class="dyno-c old">0</div>
+      <div class="dyno-c now">481</div>
+      <div class="dyno-c tgt">2,000+</div>
 
-      <div class="dyno-cell">Morning Brief</div>
-      <div class="dyno-cell old">None</div>
-      <div class="dyno-cell current">v3 &bull; 15 lines</div>
-      <div class="dyno-cell target">Auto-priority</div>
+      <div class="dyno-c">Email Monitoring</div>
+      <div class="dyno-c old">Manual</div>
+      <div class="dyno-c now">IMAP + MCP + Sent</div>
+      <div class="dyno-c tgt">Smart triage</div>
 
-      <div class="dyno-cell">Email Monitoring</div>
-      <div class="dyno-cell old">Manual</div>
-      <div class="dyno-cell current">IMAP + MCP</div>
-      <div class="dyno-cell target">Smart triage</div>
+      <div class="dyno-c">Deal Scoring</div>
+      <div class="dyno-c old">Manual</div>
+      <div class="dyno-c now">1,059 properties</div>
+      <div class="dyno-c tgt">Auto-offer</div>
 
-      <div class="dyno-cell">Calendar</div>
-      <div class="dyno-cell old">None</div>
-      <div class="dyno-cell current">Google Cal API</div>
-      <div class="dyno-cell target">Auto-scheduling</div>
+      <div class="dyno-c">Calendar</div>
+      <div class="dyno-c old">None</div>
+      <div class="dyno-c now">Google Cal MCP</div>
+      <div class="dyno-c tgt">Auto-scheduling</div>
 
-      <div class="dyno-cell">Remote Access</div>
-      <div class="dyno-cell old">Screen Share</div>
-      <div class="dyno-cell current">Tailscale mesh</div>
-      <div class="dyno-cell target">Full mobile</div>
+      <div class="dyno-c">Self-Healing</div>
+      <div class="dyno-c old">None</div>
+      <div class="dyno-c now">Agent Healer live</div>
+      <div class="dyno-c tgt">Zero-touch ops</div>
 
-      <div class="dyno-cell">Deal Scoring</div>
-      <div class="dyno-cell old">Manual</div>
-      <div class="dyno-cell current">636 properties</div>
-      <div class="dyno-cell target">Auto-offer</div>
-
-      <div class="dyno-cell">System Utilisation</div>
-      <div class="dyno-cell old">35%</div>
-      <div class="dyno-cell current">65%</div>
-      <div class="dyno-cell target">90%</div>
+      <div class="dyno-c">System Utilisation</div>
+      <div class="dyno-c old">35%</div>
+      <div class="dyno-c now">65%</div>
+      <div class="dyno-c tgt">90%</div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════ ROADMAP ══════════════════════════════ -->
+<div class="section-line"></div>
+
+<!-- ══════ ROADMAP ══════ -->
 <section>
   <div class="container">
     <div class="section-label">What's Next</div>
     <h2 class="section-title fade-up">Roadmap</h2>
 
     <div class="roadmap">
-      <div class="roadmap-card done fade-up">
-        <div class="roadmap-phase">P1 &mdash; Complete</div>
-        <div class="roadmap-title">Foundation</div>
-        <ul class="roadmap-items">
+      <div class="rm-card done fade-up">
+        <div class="rm-phase">P1 &mdash; Done</div>
+        <div class="rm-title">Foundation</div>
+        <ul class="rm-items">
           <li>Local AI (Ollama + MLX)</li>
           <li>Vector memory (ChromaDB)</li>
-          <li>Telegram bot v5</li>
+          <li>Telegram bot v6</li>
           <li>Email monitoring</li>
           <li>Security hardening</li>
         </ul>
       </div>
-
-      <div class="roadmap-card active fade-up" style="transition-delay:0.1s">
-        <div class="roadmap-phase">P2 &mdash; In Progress</div>
-        <div class="roadmap-title">Intelligence</div>
-        <ul class="roadmap-items">
-          <li>Morning brief v3 (done)</li>
-          <li>Calendar integration (done)</li>
-          <li>Deal scoring engine (done)</li>
-          <li>Smart email triage</li>
+      <div class="rm-card done fade-up" style="transition-delay:0.05s">
+        <div class="rm-phase">P2 &mdash; Done</div>
+        <div class="rm-title">Intelligence</div>
+        <ul class="rm-items">
+          <li>Morning brief v3</li>
+          <li>Calendar integration</li>
+          <li>Deal scoring engine</li>
+          <li>HAP payment tracker</li>
           <li>Agent self-healing</li>
         </ul>
       </div>
-
-      <div class="roadmap-card next fade-up" style="transition-delay:0.2s">
-        <div class="roadmap-phase">P3 &mdash; Q2 2026</div>
-        <div class="roadmap-title">Autonomy</div>
-        <ul class="roadmap-items">
+      <div class="rm-card active fade-up" style="transition-delay:0.1s">
+        <div class="rm-phase">P3 &mdash; In Progress</div>
+        <div class="rm-title">Autonomy</div>
+        <ul class="rm-items">
           <li>Auto-offer pipeline</li>
+          <li>SessionStart v2 COO brief</li>
           <li>Portfolio auto-rebalancing</li>
-          <li>Predictive maintenance alerts</li>
-          <li>Voice commands</li>
+          <li>Predictive maintenance</li>
         </ul>
       </div>
-
-      <div class="roadmap-card future fade-up" style="transition-delay:0.3s">
-        <div class="roadmap-phase">P4 &mdash; H2 2026</div>
-        <div class="roadmap-title">Scale</div>
-        <ul class="roadmap-items">
-          <li>Multi-market deal sourcing</li>
+      <div class="rm-card future fade-up" style="transition-delay:0.15s">
+        <div class="rm-phase">P4 &mdash; H2 2026</div>
+        <div class="rm-title">Scale</div>
+        <ul class="rm-items">
+          <li>Multi-market sourcing</li>
           <li>Tenant screening AI</li>
           <li>Full autonomous COO</li>
           <li>Mobile dashboard</li>
@@ -1064,50 +883,21 @@
   </div>
 </section>
 
-<!-- ══════════════════════════════ VISION ══════════════════════════════ -->
-<section style="border-bottom:none">
-  <div class="container">
-    <div class="section-label">The Vision</div>
-    <h2 class="section-title fade-up">From $4,936 to $20,000/mo</h2>
-
-    <div class="vision-bar fade-up">
-      <div class="vision-segment" style="flex:25; background:var(--green)">25%</div>
-      <div class="vision-segment" style="flex:75; background:var(--border2); color:var(--text3)">75% to go</div>
-    </div>
-
-    <div style="display:flex; justify-content:space-between; font-size:13px; color:var(--text3); margin-bottom:40px">
-      <span>6 properties &bull; $4,936/mo net</span>
-      <span>Target: 15+ properties &bull; $20,000/mo</span>
-    </div>
-
-    <div style="text-align:center; padding:40px 0">
-      <div style="font-size:14px; color:var(--text3); margin-bottom:12px; letter-spacing:0.1em; text-transform:uppercase">System Score</div>
-      <div style="font-size:80px; font-weight:800; letter-spacing:-0.03em; background:linear-gradient(135deg, var(--green), var(--blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent">7.5</div>
-      <div style="font-size:16px; color:var(--text2); margin-top:8px">out of 10</div>
-      <div style="font-size:13px; color:var(--text3); margin-top:4px">Up from 6.5 &bull; Mar 13, 2026</div>
-    </div>
-  </div>
-</section>
-
 <footer>
   <div class="container">
-    GARRY &bull; COO System &bull; Built by Claude &bull; Updated Mar 14, 2026
+    GARRY &bull; Autonomous COO &bull; Built by Claude &bull; Updated Mar 15, 2026
   </div>
 </footer>
 
 <script>
-// Intersection observer for fade-up animations
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry, i) => {
     if (entry.isIntersecting) {
-      setTimeout(() => {
-        entry.target.classList.add('visible');
-      }, i * 80);
+      setTimeout(() => entry.target.classList.add('visible'), i * 60);
       observer.unobserve(entry.target);
     }
   });
 }, { threshold: 0.1 });
-
 document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 </script>
 </body>
